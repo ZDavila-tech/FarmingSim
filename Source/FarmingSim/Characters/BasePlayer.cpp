@@ -5,6 +5,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFrameWork/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputSubsystems.h"
 #include "../FarmingSim.h"
 
 
@@ -29,6 +31,8 @@ void ABasePlayer::BeginPlay()
 		Destroy();
 		return;
 	}
+	
+
 }
 
 void ABasePlayer::Tick(float DeltaTime)

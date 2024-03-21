@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
+	class UInputMappingContext* InputMapping;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
