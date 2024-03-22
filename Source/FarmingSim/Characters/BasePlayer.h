@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonCharacter.h"
+#include "InputActionValue.h"
 #include "BasePlayer.generated.h"
 
 /**
@@ -29,8 +30,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enhanced Input")
 	class UInputMappingContext* InputMapping;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enhanced Input")
+	class UPlayerInputConfigData* InputActions;
 
 public:
 	// Called every frame
@@ -38,4 +42,14 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	//Handle Move Input
+	void Move(const FInputActionValue& Value);
+
+	//Handle look input
+	void Look(const FInputActionValue& Value);
+
+	//Handle jump input
+	void Jump(const FInputActionValue& Value);
+	void StopJump(const FInputActionValue& Value);
 };
