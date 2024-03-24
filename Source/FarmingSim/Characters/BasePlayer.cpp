@@ -22,6 +22,7 @@ ABasePlayer::ABasePlayer()
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComp->SetupAttachment(SpringArmComp);
+
 }
 
 void ABasePlayer::BeginPlay()

@@ -27,6 +27,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent* CameraComp;
 
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
 

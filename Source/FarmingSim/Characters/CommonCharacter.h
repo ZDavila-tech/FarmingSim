@@ -22,8 +22,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USkeletalMeshComponent* SkeletalMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UChildActorComponent* WeaponChildActorComp;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FName SocketName;
 
 public:	
 	// Called every frame
