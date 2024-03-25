@@ -20,6 +20,13 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float HealthCurrent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float HealthMax;
+
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

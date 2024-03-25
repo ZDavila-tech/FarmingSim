@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "../Utility/PlayerInputConfigData.h"
+#include "../Widgets/PauseMenu.h"
 #include "../FarmingSim.h"
 
 
@@ -57,6 +58,7 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PEI->BindAction(InputActions->InputMove, ETriggerEvent::Triggered, this, &ABasePlayer::Move);
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Started, this, &ABasePlayer::Jump);
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Completed, this, &ABasePlayer::StopJump);
+	PEI->BindAction(InputActions->InputPauseMenu, ETriggerEvent::Completed, this, &ABasePlayer::OpenPause);
 }
 
 void ABasePlayer::Move(const FInputActionValue& Value)
@@ -106,6 +108,17 @@ void ABasePlayer::Jump(const FInputActionValue& Value)
 void ABasePlayer::StopJump(const FInputActionValue& Value)
 {
 	Super::StopJumping();
+}
+
+void ABasePlayer::OpenPause(const FInputActionValue& Value)
+{
+	PauseMenu = CreateWidget<UPauseMenu>(PlayerController, PauseClass);
+	if (PauseMenu == nullptr)
+	{
+		UE_LOG(Game, Error, TEXT("Need a Pause Menu"));
+		return;
+	}
+	PauseMenu->AddToViewport();
 }
 
 

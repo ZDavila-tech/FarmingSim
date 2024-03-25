@@ -27,8 +27,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent* CameraComp;
 
-
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
 
@@ -37,6 +35,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enhanced Input")
 	class UPlayerInputConfigData* InputActions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UPauseMenu> PauseClass;
+
+	class UPauseMenu* PauseMenu;
 
 public:
 	// Called every frame
@@ -54,4 +57,7 @@ public:
 	//Handle jump input
 	void Jump(const FInputActionValue& Value);
 	void StopJump(const FInputActionValue& Value);
+
+	//Hande player pause input
+	void OpenPause(const FInputActionValue& Value);
 };
