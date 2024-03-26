@@ -19,10 +19,34 @@ protected:
 	class UButton* BTN_Back;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class USlider* SLIDER_Background;
+	class UButton* BTN_Save;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class USlider* SLIDER_SFX;
+	class UButton* BTN_Volume;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UButton* BTN_Graphics;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class APlayerController* Player;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	class UWidgetSwitcher* Switch_WidgetSwitch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class USaveMenu> SaveClass;
+
+	class USaveMenu* SaveMenu;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UVolumeMenu> VolumeClass;
+
+	class UVolumeMenu* VolumeMenu;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UGraphicsMenu> GraphicsClass;
+
+	class UGraphicsMenu* GraphicsMenu;
 
 public:
 	USettingsMenu(const FObjectInitializer& ObjectIntializer);
@@ -33,9 +57,12 @@ public:
 	void OnBackClick();
 
 	UFUNCTION()
-	void OnSFXValueChange(float Value);
+	void OnSaveClick();
 
 	UFUNCTION()
-	void OnBackgroundValueChange(float Value);
+	void OnVolumeClick();
+
+	UFUNCTION()
+	void OnGraphicsClick();
 	
 };
