@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "../Widgets/UI.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Widgets/MainMenu.h"
 
 
 AFarmingSimHUD::AFarmingSimHUD()
@@ -16,7 +17,12 @@ AFarmingSimHUD::AFarmingSimHUD()
 void AFarmingSimHUD::BeginPlay()
 {
 	UIMenu = CreateWidget<UUI>(PC, UIClass);
-	ShowUI();
+
+	MainMenu = CreateWidget<UMainMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), MainMenuClass);
+	if (MainMenu != nullptr)
+	{
+		MainMenu->AddToViewport();
+	}
 }
 
 void AFarmingSimHUD::ShowUI()
@@ -29,5 +35,8 @@ void AFarmingSimHUD::ShowUI()
 
 void AFarmingSimHUD::HideUI()
 {
-	UIMenu->RemoveFromParent();
+	if (UIMenu != nullptr)
+	{
+		UIMenu->RemoveFromParent();
+	}
 }

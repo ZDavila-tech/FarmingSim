@@ -14,4 +14,21 @@ class FARMINGSIM_API UFarmingSimGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FString SaveSlotName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FString> SaveSlotNames;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool AnySlots;
+
+
+public:
+
+	virtual void Init() override;
+
+	UFUNCTION()
+	bool GetAnySlots() const;
 };

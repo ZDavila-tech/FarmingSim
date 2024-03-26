@@ -25,6 +25,11 @@ protected:
 
 	class UUI* UIMenu;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UMainMenu> MainMenuClass;
+
+	class UMainMenu* MainMenu;
+
 public:
 	
 	AFarmingSimHUD();

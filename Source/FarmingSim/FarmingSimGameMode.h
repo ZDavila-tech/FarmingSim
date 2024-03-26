@@ -14,4 +14,12 @@ class FARMINGSIM_API AFarmingSimGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+protected:
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AFarmingSimHUD* HUD;
+
+
 };
