@@ -17,12 +17,13 @@ AFarmingSimHUD::AFarmingSimHUD()
 void AFarmingSimHUD::BeginPlay()
 {
 	UIMenu = CreateWidget<UUI>(PC, UIClass);
+	ShowUI();
 
-	MainMenu = CreateWidget<UMainMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), MainMenuClass);
+	/*MainMenu = CreateWidget<UMainMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), MainMenuClass);
 	if (MainMenu != nullptr)
 	{
 		MainMenu->AddToViewport();
-	}
+	}*/
 }
 
 void AFarmingSimHUD::ShowUI()
