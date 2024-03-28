@@ -17,13 +17,17 @@ AFarmingSimHUD::AFarmingSimHUD()
 void AFarmingSimHUD::BeginPlay()
 {
 	UIMenu = CreateWidget<UUI>(PC, UIClass);
-	ShowUI();
 
-	/*MainMenu = CreateWidget<UMainMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), MainMenuClass);
-	if (MainMenu != nullptr)
+	MainMenu = CreateWidget<UMainMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), MainMenuClass);
+	if (MainMenu != nullptr && UGameplayStatics::GetCurrentLevelName(GetWorld()) == FName("Map_MainMenu"))
 	{
 		MainMenu->AddToViewport();
-	}*/
+	}
+	else
+	{
+		MainMenu->RemoveFromParent();
+		ShowUI();
+	}
 }
 
 void AFarmingSimHUD::ShowUI()
@@ -40,4 +44,16 @@ void AFarmingSimHUD::HideUI()
 	{
 		UIMenu->RemoveFromParent();
 	}
+}
+
+void AFarmingSimHUD::EnterMenuMode()
+{
+	PC->SetInputMode(FInputModeGameAndUI());
+	PC->SetShowMouseCursor(true);
+}
+
+void AFarmingSimHUD::ExitMenuMode()
+{
+	PC->SetShowMouseCursor(false);
+	PC->SetInputMode(FInputModeGameOnly());
 }

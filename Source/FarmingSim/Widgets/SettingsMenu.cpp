@@ -9,6 +9,7 @@
 #include "VolumeMenu.h"
 #include "GraphicsMenu.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Utility/FarmingSimHUD.h"
 #include "../FarmingSim.h"
 
 USettingsMenu::USettingsMenu(const FObjectInitializer& ObjectIntializer) : Super(ObjectIntializer)
@@ -71,6 +72,7 @@ void USettingsMenu::NativeConstruct()
 void USettingsMenu::OnBackClick()
 {
 	RemoveFromParent();
+
 }
 
 void USettingsMenu::OnSaveClick()

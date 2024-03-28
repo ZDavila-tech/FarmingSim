@@ -31,8 +31,28 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFarmingSimGameInstance* GameInstance;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AFarmingSimHUD* HUD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class USettingsMenu> SettingsClass;
+
+	class USettingsMenu* SettingsMenu;
+
 public:
 	UMainMenu(const FObjectInitializer& ObjectIntializer);
 
 	virtual void NativeConstruct() override;
+
+	UFUNCTION(BlueprintCallable)
+	void OnNewGameClicked();
+
+	UFUNCTION(BlueprintCallable)
+	void OnLoadGameClicked();
+
+	UFUNCTION(BlueprintCallable)
+	void OnSettingsClicked();
+
+	UFUNCTION(BlueprintCallable)
+	void OnCreditsClicked();
 };

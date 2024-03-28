@@ -4,6 +4,9 @@
 #include "MainMenu.h"
 #include "Components/Button.h"
 #include "../FarmingSimGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Utility/FarmingSimHUD.h"
+#include "SettingsMenu.h"
 #include "../FarmingSim.h"
 
 UMainMenu::UMainMenu(const FObjectInitializer& ObjectIntializer) : Super(ObjectIntializer)
@@ -36,6 +39,18 @@ void UMainMenu::NativeConstruct()
 		UE_LOG(Game, Warning, TEXT("Game Instance Not Valid"));
 		return;
 	}
+	
+	HUD = Cast<AFarmingSimHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+	if (HUD == nullptr)
+	{
+		UE_LOG(Game, Warning, TEXT("HUD Not Valid"));
+		return;
+	}
+
+	BTN_NewGame->OnClicked.AddDynamic(this, &UMainMenu::OnNewGameClicked);
+	BTN_LoadGame->OnClicked.AddDynamic(this, &UMainMenu::OnLoadGameClicked);
+	BTN_Settings->OnClicked.AddDynamic(this, &UMainMenu::OnSettingsClicked);
+	BTN_Credits->OnClicked.AddDynamic(this, &UMainMenu::OnCreditsClicked);
 
 	if (!GameInstance->GetAnySlots())
 	{
@@ -43,6 +58,29 @@ void UMainMenu::NativeConstruct()
 		{
 			BTN_LoadGame->SetIsEnabled(false);
 		}
-		
 	}
+}
+
+void UMainMenu::OnNewGameClicked()
+{	
+	UGameplayStatics::OpenLevel(GetWorld(), FName("ThirdPersonMap"));
+}
+
+void UMainMenu::OnLoadGameClicked()
+{
+}
+
+void UMainMenu::OnSettingsClicked()
+{
+	SettingsMenu = CreateWidget<USettingsMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), SettingsClass);
+	if (SettingsMenu == nullptr)
+	{
+		UE_LOG(Game, Error, TEXT("Settings Menu Not Valid"));
+	}
+	SettingsMenu->AddToViewport();
+	SettingsMenu->bIsFocusable = true;
+}
+
+void UMainMenu::OnCreditsClicked()
+{
 }

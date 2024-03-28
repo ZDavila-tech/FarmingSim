@@ -39,4 +39,10 @@ public:
 
 	UFUNCTION()
 	void HideUI();
+
+	UFUNCTION()
+	void EnterMenuMode();
+
+	UFUNCTION()
+	void ExitMenuMode();
 };

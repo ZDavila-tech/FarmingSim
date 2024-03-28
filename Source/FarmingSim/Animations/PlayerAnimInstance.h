@@ -30,6 +30,9 @@ protected:
 	bool ShouldMove;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isTired;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isFalling;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -37,6 +40,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Velocity;
+
 
 public:
 	virtual void NativeInitializeAnimation();
