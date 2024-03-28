@@ -20,8 +20,29 @@ void UHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	HealthCurrent = HealthMax;
+	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DoDamage);
 }
 
+
+void UHealthComponent::DoDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	HealthCurrent = FMath::Clamp(HealthCurrent - GetDamage(DamageType, Damage), 0.0f, HealthMax);
+	if (HealthCurrent > 0)
+	{
+		OnHealthChanged.Broadcast(HealthCurrent / HealthMax);
+	}
+	else
+	{
+		GetOwner()->OnTakeAnyDamage.RemoveDynamic(this, &UHealthComponent::DoDamage);
+		OnHealthChanged.Broadcast(HealthCurrent / HealthMax);
+
+	}
+}
+
+float UHealthComponent::GetDamage(const UDamageType* DamageType, float Damage)
+{
+	return 1.0f;
+}
 
 // Called every frame
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -29,5 +50,10 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+FHealthDelegate* UHealthComponent::GetHealthDelegate()
+{
+	return &OnHealthChanged;
 }
 

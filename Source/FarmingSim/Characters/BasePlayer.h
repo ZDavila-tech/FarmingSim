@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AFarmingSimHUD* HUD;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enhanced Input")
 	class UInputMappingContext* InputMapping;
 
@@ -40,6 +43,8 @@ protected:
 	TSubclassOf<class UPauseMenu> PauseClass;
 
 	class UPauseMenu* PauseMenu;
+
+	class UUI* UIRef;
 
 public:
 	// Called every frame

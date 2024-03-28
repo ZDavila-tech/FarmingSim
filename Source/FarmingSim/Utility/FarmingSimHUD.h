@@ -41,6 +41,9 @@ public:
 	void HideUI();
 
 	UFUNCTION()
+	UUI* GetUI();
+
+	UFUNCTION()
 	void EnterMenuMode();
 
 	UFUNCTION()

@@ -9,8 +9,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Utility/FarmingSimHUD.h"
+#include "../Components/HealthComponent.h"
 #include "../Utility/PlayerInputConfigData.h"
 #include "../Widgets/PauseMenu.h"
+#include "../Widgets/UI.h"
 #include "../FarmingSim.h"
 
 
@@ -37,12 +41,15 @@ void ABasePlayer::BeginPlay()
 		Destroy();
 		return;
 	}
+	HUD = Cast<AFarmingSimHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+	UIRef = HUD->GetUI();
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(InputMapping, 0);;
 	}
 	
-
+	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
+	
 }
 
 void ABasePlayer::Tick(float DeltaTime)

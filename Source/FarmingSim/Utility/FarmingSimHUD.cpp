@@ -46,6 +46,11 @@ void AFarmingSimHUD::HideUI()
 	}
 }
 
+UUI* AFarmingSimHUD::GetUI()
+{
+	return UIMenu;
+}
+
 void AFarmingSimHUD::EnterMenuMode()
 {
 	PC->SetInputMode(FInputModeGameAndUI());

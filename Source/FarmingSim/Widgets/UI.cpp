@@ -4,6 +4,15 @@
 #include "UI.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
+#include "../FarmingSim.h"
+
+UUI::UUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	if (BAR_Health == nullptr)
+	{
+		UE_LOG(Game, Warning, TEXT("No Valid Bar"));
+	}
+}
 
 void UUI::NativeConstruct()
 {

@@ -30,6 +30,8 @@ protected:
 
 public:
 
+	UUI(const FObjectInitializer& ObjectInitializer);
+
 	virtual void NativeConstruct() override;
 
 	UFUNCTION(BlueprintCallable)
