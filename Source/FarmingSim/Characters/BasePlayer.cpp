@@ -15,6 +15,7 @@
 #include "../Utility/PlayerInputConfigData.h"
 #include "../Widgets/PauseMenu.h"
 #include "../Widgets/UI.h"
+#include "../FarmingSimGameInstance.h"
 #include "../FarmingSim.h"
 
 
@@ -41,7 +42,11 @@ void ABasePlayer::BeginPlay()
 		Destroy();
 		return;
 	}
+
 	HUD = Cast<AFarmingSimHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+
+	GameInstance = Cast<UFarmingSimGameInstance>(GetWorld()->GetGameInstance());
+
 	UIRef = HUD->GetUI();
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
@@ -66,6 +71,7 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Started, this, &ABasePlayer::Jump);
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Completed, this, &ABasePlayer::StopJump);
 	PEI->BindAction(InputActions->InputPauseMenu, ETriggerEvent::Completed, this, &ABasePlayer::OpenPause);
+	PEI->BindAction(InputActions->InputUseItem, ETriggerEvent::Completed, this, &ABasePlayer::UseItem);
 }
 
 void ABasePlayer::Move(const FInputActionValue& Value)
@@ -127,5 +133,17 @@ void ABasePlayer::OpenPause(const FInputActionValue& Value)
 	}
 	PauseMenu->AddToViewport();
 }
+
+void ABasePlayer::UseItem(const FInputActionValue& Value)
+{
+	FPlayerSave player;
+	player.ControlRotation = GetControlRotation();
+	player.Health = HealthComponent->GetCurrentHealth();
+	player.PlayerName = FName("Zolee");
+	player.PlayerTransform = GetActorTransform();
+	GameInstance->SavePlayerData(player);
+	UE_LOG(Game, Error, TEXT("Saved Game"));
+}
+
 
 

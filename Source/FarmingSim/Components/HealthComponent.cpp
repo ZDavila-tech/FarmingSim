@@ -57,3 +57,8 @@ FHealthDelegate* UHealthComponent::GetHealthDelegate()
 	return &OnHealthChanged;
 }
 
+float UHealthComponent::GetCurrentHealth()
+{
+	return HealthCurrent;
+}
+

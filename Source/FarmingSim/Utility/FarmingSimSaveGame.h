@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "PlayerSave.h"
 #include "FarmingSimSaveGame.generated.h"
+
 
 /**
  * 
@@ -14,4 +16,8 @@ class FARMINGSIM_API UFarmingSimSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 	
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FPlayerSave PlayerData;
+
 };

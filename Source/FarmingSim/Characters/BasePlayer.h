@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class AFarmingSimHUD* HUD;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UFarmingSimGameInstance* GameInstance;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enhanced Input")
 	class UInputMappingContext* InputMapping;
 
@@ -65,4 +68,7 @@ public:
 
 	//Hande player pause input
 	void OpenPause(const FInputActionValue& Value);
+
+	//Handle Use Item input
+	void UseItem(const FInputActionValue& Value);
 };
