@@ -21,13 +21,17 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool IsPlowed;
+	FVector origin;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool IsEmpty;
+	FVector boxExtent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool IsWatered;
+	TArray<FVector> PlantableLocations;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AActor> SpawnClass;
+
 
 public:	
 	// Called every frame
