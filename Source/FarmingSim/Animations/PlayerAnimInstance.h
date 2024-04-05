@@ -39,6 +39,9 @@ protected:
 	float Speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Direction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Velocity;
 
 

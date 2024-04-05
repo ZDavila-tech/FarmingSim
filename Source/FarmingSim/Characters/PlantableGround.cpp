@@ -26,19 +26,19 @@ void APlantableGround::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, boxExtent.ToString());
 
 	double x = boxExtent.X / 6.0f;
-	double y = boxExtent.Y / 6.0f;
-	double startX = x;
-	double startY = y;
+	double y = boxExtent.Y / 4.0f;
+	double startX = 0;
+	double startY = 0;
 	for (int i = 0; i < PlantableLocations.Num(); i++)
 	{
 		PlantableLocations[i] = FVector(startX, startY, 32.0f);
 		startX += x;
 		if (startX >= boxExtent.X)
 		{
-			startX = x;
+			startX = 0;
 			startY += y;
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 25.f, FColor::Red, PlantableLocations[i].ToString());
+		//GEngine->AddOnScreenDebugMessage(-1, 25.f, FColor::Red, PlantableLocations[i].ToString());
 	}
 	
 }
