@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "CommonCharacter.h"
 #include "InputActionValue.h"
+#include "../Interfaces/InteractInterface.h"
 #include "BasePlayer.generated.h"
 
 /**
  * 
  */
 UCLASS(Blueprintable, BlueprintType)
-class FARMINGSIM_API ABasePlayer : public ACommonCharacter
+class FARMINGSIM_API ABasePlayer : public ACommonCharacter, public IInteractInterface
 {
 	GENERATED_BODY()
 	
@@ -71,4 +72,8 @@ public:
 
 	//Handle Use Item input
 	void UseItem(const FInputActionValue& Value);
+
+	void HandleInteract(class ABasePlayer* PlayerCharacter);
+	
+	FText LookAt();
 };
