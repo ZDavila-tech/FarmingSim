@@ -22,6 +22,8 @@ class FARMINGSIM_API IFarmingInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+
+	virtual void LookAtPlot(class ABasePlayer PlayerCharacter) = 0;
 	//Plant trees in area
 	virtual void PlantTrees(class ABasePlayer PlayerCharacter) = 0;
 	//Plant plants in area

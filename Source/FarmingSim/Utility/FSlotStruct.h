@@ -10,6 +10,6 @@ struct FSlotStruct
     GENERATED_BODY()
 
 public:
-
+    int Index;
 
 };

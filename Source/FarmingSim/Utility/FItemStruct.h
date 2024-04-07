@@ -10,6 +10,6 @@ struct FItemStruct
     GENERATED_BODY()
 
 public:
-    int Index;
+    
 
 };

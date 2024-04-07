@@ -4,6 +4,8 @@
 #include "PlantableGround.h"
 #include "../Characters/BasePlayer.h"
 #include "Engine/StaticMesh.h"
+#include "../Widgets/PlotWidget.h"
+#include "Components/WidgetComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "../FarmingSim.h"
 
@@ -12,6 +14,19 @@ APlantableGround::APlantableGround()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	DefaultRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root"));
+	SetRootComponent(DefaultRoot);
+
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
+	StaticMesh->SetupAttachment(RootComponent);
+
+	StaticMesh->SetWorldScale3D(FVector(0.39f, 0.39f, 0.01f));
+
+	Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Plot Widget"));
+	Widget->SetupAttachment(RootComponent);
+	Widget->SetRelativeRotation(FRotator(90.0f, 90.0f, 0.0f));
+	Widget->SetRelativeScale3D(FVector(0.198f, 0.198f, 0.198f));
+	Widget->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 
 }
 
@@ -19,28 +34,8 @@ APlantableGround::APlantableGround()
 void APlantableGround::BeginPlay()
 {
 	Super::BeginPlay();
-	PlantableLocations.SetNum(24);
 
-	this->GetActorBounds(false, origin, boxExtent);
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, boxExtent.ToString());
-
-	double x = boxExtent.X / 6.0f;
-	double y = boxExtent.Y / 4.0f;
-	double startX = 0;
-	double startY = 0;
-	for (int i = 0; i < PlantableLocations.Num(); i++)
-	{
-		PlantableLocations[i] = FVector(startX, startY, 32.0f);
-		startX += x;
-		if (startX >= boxExtent.X)
-		{
-			startX = 0;
-			startY += y;
-		}
-		//GEngine->AddOnScreenDebugMessage(-1, 25.f, FColor::Red, PlantableLocations[i].ToString());
-	}
-	
+	Widget->SetVisibility(false);
 }
 
 // Called every frame
@@ -48,6 +43,11 @@ void APlantableGround::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void APlantableGround::LookAtPlot(ABasePlayer PlayerCharacter)
+{
+	Widget->SetVisibility(true);
 }
 
 void APlantableGround::PlantTrees(class ABasePlayer PlayerCharacter)

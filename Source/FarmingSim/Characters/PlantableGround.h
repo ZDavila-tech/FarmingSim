@@ -21,13 +21,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector origin;
+	class USceneComponent* DefaultRoot;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector boxExtent;
+	class UWidgetComponent* Widget;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<FVector> PlantableLocations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AActor> SpawnClass;
@@ -37,6 +37,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void LookAtPlot(class ABasePlayer PlayerCharacter) override;
 	//Plant trees in area
 	void PlantTrees(class ABasePlayer PlayerCharacter) override;
 	//Plant plants in area
