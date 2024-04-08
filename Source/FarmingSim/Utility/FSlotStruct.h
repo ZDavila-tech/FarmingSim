@@ -1,15 +1,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "FSlotStruct.generated.h"
 
 USTRUCT(Blueprintable, BlueprintType)
 struct FSlotStruct
 {
-    GENERATED_BODY()
+	GENERATED_USTRUCT_BODY()
 
 public:
-    int Index;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FName ItemID;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int Quantity;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool Equipped;
 };

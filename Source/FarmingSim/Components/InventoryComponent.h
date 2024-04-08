@@ -35,6 +35,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int InventorySize;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<struct FSlotStruct> Content;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UDataTable* ItemDataTable;
+
 
 public:	
 	// Called every frame
@@ -82,7 +88,7 @@ public:
 	bool CreateStack(FName ItemID, int Quantity);
 
 	UFUNCTION(BlueprintCallable)	//Needs to be edited when FSlotStruct created
-	void GetItemData(FName ItemID) const;
+	FItemStruct GetItemData(FName ItemID) const;
 
 	UFUNCTION(BlueprintCallable)
 	FVector GetDropLocation() const;

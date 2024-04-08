@@ -5,6 +5,7 @@
 #include "WorldCollision.h"
 #include "../Interfaces/InteractInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/DataTable.h"
 #include "../Utility/FItemStruct.h"
 #include "../Utility/FSlotStruct.h"
 
@@ -58,29 +59,79 @@ void UInventoryComponent::InteractionTrace()
 
 void UInventoryComponent::FindSlot(FName ItemID, int& Index, bool& isSlotFound)
 {
+	for (int i = 0; Content.Num(); i++)
+	{
+		if (Content[i].ItemID == ItemID)
+		{
+			if (Content[i].Quantity < GetLimit(ItemID))
+			{
+				Index = i;
+				isSlotFound = true;
+				return;
+			}
+			else
+			{
+				Index = 0;
+				isSlotFound = false;
+				return;
+			}
+		}
+	}
+
+	Index = -1;
+	isSlotFound = false;
+	return;
 }
 
 int UInventoryComponent::GetLimit(FName ItemID) const
 {
-	return 0;
+	FItemStruct* OutRow = ItemDataTable->FindRow<FItemStruct>(ItemID, "");
+	if (OutRow)
+	{
+		return OutRow->Limit;
+	}
+	else
+	{
+		return -1;
+	}
 }
 
 void UInventoryComponent::AddToStack(int Index, int Quantity)
 {
+	FSlotStruct temp(Content[Index].ItemID, Content[Index].Quantity + Quantity, false);
+	Content[Index] = temp;
 }
 
 bool UInventoryComponent::AnyEmptySlots(int& Index)
 {
+	for (int i = 0; i < Content.Num(); i++)
+	{
+		if (Content[i].Quantity == 0)
+		{
+			Index = i;
+			return true;
+		}
+
+	}
+	Index = -1;
 	return false;
 }
 
 bool UInventoryComponent::CreateStack(FName ItemID, int Quantity)
 {
+	int Index;
+	if (AnyEmptySlots(Index))
+	{
+		Content[Index] = FSlotStruct(ItemID, Quantity, false);
+		return true;
+	}
+
 	return false;
 }
 
-void UInventoryComponent::GetItemData(FName ItemID) const
+FItemStruct UInventoryComponent::GetItemData(FName ItemID) const
 {
+	return FItemStruct(*ItemDataTable->FindRow<FItemStruct>(ItemID, ""));
 }
 
 FVector UInventoryComponent::GetDropLocation() const
