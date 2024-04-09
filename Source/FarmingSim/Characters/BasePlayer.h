@@ -22,12 +22,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
+	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent* CameraComp;
 
+	UPROPERTY(EditDefaultsOnly)
+	class UInventoryComponent* InventoryComp;
+
+	//Game Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
 
@@ -37,12 +42,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFarmingSimGameInstance* GameInstance;
 
+	//Inputs
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enhanced Input")
 	class UInputMappingContext* InputMapping;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enhanced Input")
 	class UPlayerInputConfigData* InputActions;
 
+	//Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UPauseMenu> PauseClass;
 
@@ -73,6 +80,7 @@ public:
 	//Handle Use Item input
 	void UseItem(const FInputActionValue& Value);
 
+	
 	void HandleInteract(class ABasePlayer* PlayerCharacter);
 	
 	FText LookAt();

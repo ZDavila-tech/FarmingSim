@@ -30,4 +30,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* InputUseItem;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* InputInteract;
+
 };

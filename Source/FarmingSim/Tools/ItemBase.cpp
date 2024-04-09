@@ -2,13 +2,21 @@
 
 
 #include "ItemBase.h"
+#include "Components/StaticMeshComponent.h"
+#include "../Components/ItemComponent.h"
 
 // Sets default values
 AItemBase::AItemBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+	DefaultRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root"));
+	SetRootComponent(DefaultRoot);
 
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
+	StaticMesh->SetupAttachment(RootComponent);
+
+	ItemComp = CreateDefaultSubobject<UItemComponent>(TEXT("Item Component"));
 }
 
 // Called when the game starts or when spawned
@@ -23,5 +31,15 @@ void AItemBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AItemBase::HandleInteract(ABasePlayer* PlayerCharacter)
+{
+	ItemComp->HandleInteract(PlayerCharacter);
+}
+
+FText AItemBase::LookAt()
+{
+	return ItemComp->LookAt();
 }
 

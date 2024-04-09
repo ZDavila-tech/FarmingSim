@@ -4,10 +4,14 @@
 #include "InventoryComponent.h"
 #include "WorldCollision.h"
 #include "../Interfaces/InteractInterface.h"
+#include "EnhancedInputComponent.h"
+#include "ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DataTable.h"
 #include "../Utility/FItemStruct.h"
 #include "../Utility/FSlotStruct.h"
+#include "../FarmingSim.h"
+#include "../Characters/BasePlayer.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -15,7 +19,7 @@ UInventoryComponent::UInventoryComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
+	InteractRange = 100.0f;
 	// ...
 }
 
@@ -23,7 +27,7 @@ UInventoryComponent::UInventoryComponent()
 // Called when the game starts
 void UInventoryComponent::BeginPlay()
 {
-	//Super::BeginPlay();
+	Super::BeginPlay();
 	Content.SetNum(InventorySize);
 	
 	Update();
@@ -33,9 +37,18 @@ void UInventoryComponent::BeginPlay()
 // Called every frame
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	InteractionTrace();
 	// ...
+}
+
+void UInventoryComponent::InteractEvent(const FInputActionValue& Value)
+{
+	if (LookAtActor)
+	{
+		UE_LOG(Game, Error, TEXT("Found onion"));
+		Interact(LookAtActor);
+	}
 }
 
 void UInventoryComponent::DropItem(FName ItemID, int Quantity)
@@ -65,6 +78,13 @@ void UInventoryComponent::UseItemEvent(int Index)
 
 void UInventoryComponent::Interact(AActor* TargetActor)
 {
+	UItemComponent* Comp = TargetActor->GetComponentByClass<class UItemComponent>();
+	if (IsValid(Comp))
+	{
+		UE_LOG(Game, Error, TEXT("Interact Found"));
+		Comp->HandleInteract(Cast<ABasePlayer>(GetOwner()));
+	}
+
 }
 
 void UInventoryComponent::EquipEvent(int Index)
@@ -77,25 +97,32 @@ void UInventoryComponent::EquipEvent(int Index)
 void UInventoryComponent::InteractionTrace()
 {
 	FHitResult HitActor;
-	float Radius = 100.0f;
-	FVector Start = Cast<AActor>(UGameplayStatics::GetPlayerController(GetWorld(),0))->GetActorLocation();
-	FVector End = Start + (Cast<AActor>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetActorForwardVector() * InteractRange);
+	float Radius = 150.0f;
+	FVector Start = FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y,15.0f);
+	FVector End = Start + FVector(GetOwner()->GetActorForwardVector().X * InteractRange, GetOwner()->GetActorForwardVector().Y * InteractRange, 15.0f);
 	ECollisionChannel Channel = ECC_GameTraceChannel1;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
-
-	if (GetWorld()->SweepSingleByChannel(HitActor, Start, End, FQuat::Identity, Channel, FCollisionShape::MakeSphere(Radius), Params))
+	
+	if (GetWorld()->LineTraceSingleByChannel(HitActor, Start, End, Channel, Params))
 	{
+		DrawDebugLine(GetWorld(), Start, HitActor.ImpactPoint, FColor::Red, false, -1.0f, 0, 2.0f);
+		DrawDebugSphere(GetWorld(), HitActor.ImpactPoint,10.0f, 10, FColor::Green);
 		if (HitActor.GetActor() != LookAtActor)
 		{
 			LookAtActor = HitActor.GetActor();
 		}
 	}
+	else
+	{
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1.0f, 0, 2.0f);
+	}
+
 }
 
 void UInventoryComponent::FindSlot(FName ItemID, int& Index, bool& isSlotFound)
 {
-	for (int i = 0; Content.Num(); i++)
+	for (int i = 0; i < Content.Num(); i++)
 	{
 		if (Content[i].ItemID == ItemID)
 		{
@@ -158,6 +185,7 @@ bool UInventoryComponent::CreateStack(FName ItemID, int Quantity)
 	int Index;
 	if (AnyEmptySlots(Index))
 	{
+		UE_LOG(Game, Error, TEXT("Empty Slot Found"));
 		Content[Index] = FSlotStruct(ItemID, Quantity, false);
 		return true;
 	}
@@ -232,18 +260,21 @@ void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Succe
 	bool HasFoundSlot;
 	while (LocalQuantityRemaining > 0 && !LocalHasFailed)
 	{
+		UE_LOG(Game, Error, TEXT("in while loop Found"));
 		FindSlot(ItemID, LocalIndex, HasFoundSlot);
 		if (HasFoundSlot)
 		{
 			AddToStack(LocalIndex, 1);
 			--LocalQuantityRemaining;
 			Update();
+			UE_LOG(Game, Error, TEXT("found slot Found"));
 		}
 		else
 		{
 			if (LocalIndex != -1)
 			{
 				LocalHasFailed = true;
+				UE_LOG(Game, Error, TEXT("Local failed Found"));
 			}
 			else
 			{
@@ -254,6 +285,7 @@ void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Succe
 					{
 						--LocalQuantityRemaining;
 						Update();
+						UE_LOG(Game, Error, TEXT("slot Found"));
 					}
 					else
 					{
@@ -262,6 +294,7 @@ void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Succe
 				}
 				else
 				{
+					UE_LOG(Game, Error, TEXT("did not find slots Found"));
 					LocalHasFailed = true;
 				}
 			}

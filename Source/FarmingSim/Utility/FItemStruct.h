@@ -9,24 +9,24 @@ struct FItemStruct : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 	 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	FText Name;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	FText Description;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* Icon;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AActor> ItemClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	int Limit;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	float BuyCost;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	float SellCost;
 };

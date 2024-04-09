@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interfaces/InteractInterface.h"
 #include "ItemBase.generated.h"
 
-UCLASS()
-class FARMINGSIM_API AItemBase : public AActor
+UCLASS(Abstract)
+class FARMINGSIM_API AItemBase : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 	
@@ -19,8 +20,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USceneComponent* DefaultRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UItemComponent* ItemComp;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void HandleInteract(class ABasePlayer* PlayerCharacter) override;
+
+	FText LookAt() override;
 };

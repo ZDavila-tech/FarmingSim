@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InputActionValue.h"
 #include "InventoryComponent.generated.h"
 
 
@@ -32,7 +33,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class AActor* LookAtActor;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	int InventorySize;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -45,6 +46,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	//Handle Interact Input
+	void InteractEvent(const FInputActionValue& Value);
 
 	//Implementable events
 	UFUNCTION(BlueprintCallable)

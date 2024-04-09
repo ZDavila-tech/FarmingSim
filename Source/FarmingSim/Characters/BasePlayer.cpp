@@ -4,6 +4,7 @@
 #include "BasePlayer.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFrameWork/SpringArmComponent.h"
+#include "../Components/InventoryComponent.h"
 #include "Camera/CameraComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
@@ -29,6 +30,7 @@ ABasePlayer::ABasePlayer()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComp->SetupAttachment(SpringArmComp);
 
+	InventoryComp = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory Comp"));
 }
 
 void ABasePlayer::BeginPlay()
@@ -54,7 +56,6 @@ void ABasePlayer::BeginPlay()
 	}
 	
 	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
-	
 }
 
 void ABasePlayer::Tick(float DeltaTime)
@@ -72,6 +73,7 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Completed, this, &ABasePlayer::StopJump);
 	PEI->BindAction(InputActions->InputPauseMenu, ETriggerEvent::Completed, this, &ABasePlayer::OpenPause);
 	PEI->BindAction(InputActions->InputUseItem, ETriggerEvent::Completed, this, &ABasePlayer::UseItem);
+	PEI->BindAction(InputActions->InputInteract, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::InteractEvent);
 }
 
 void ABasePlayer::Move(const FInputActionValue& Value)
