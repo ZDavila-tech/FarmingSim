@@ -47,25 +47,19 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	//Implementable events
-	UFUNCTION(BlueprintImplementableEvent) 
+	UFUNCTION(BlueprintCallable)
 	void DropItem(FName ItemID, int Quantity);
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void MoveItem(int SourceIndex, UInventoryComponent* SourceInventory, int DestinationIndex);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void Remove(int Index, bool RemoveAll, bool IsUsed);
-
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable)
 	void Update();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable)
 	void UseItemEvent(int Index);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable)
 	void Interact(AActor* TargetActor);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable)
 	void EquipEvent(int Index);
 
 	//Functions

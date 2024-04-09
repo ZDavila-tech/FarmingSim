@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemBase.h"
-#include "BaseTool.generated.h"
+#include "GameFramework/Actor.h"
+#include "ItemBase.generated.h"
 
 UCLASS()
-class FARMINGSIM_API ABaseTool : public AItemBase
+class FARMINGSIM_API AItemBase : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ABaseTool();
+	AItemBase();
 
 protected:
 	// Called when the game starts or when spawned

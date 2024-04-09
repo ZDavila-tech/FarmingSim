@@ -23,19 +23,55 @@ UInventoryComponent::UInventoryComponent()
 // Called when the game starts
 void UInventoryComponent::BeginPlay()
 {
-	Super::BeginPlay();
-
-	InteractionTrace();
+	//Super::BeginPlay();
+	Content.SetNum(InventorySize);
 	
+	Update();
 }
 
 
 // Called every frame
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	InteractionTrace();
 	// ...
+}
+
+void UInventoryComponent::DropItem(FName ItemID, int Quantity)
+{
+}
+
+void UInventoryComponent::Update()
+{
+	//Add Dispatch
+	for (int i = 0; i < Content.Num(); i++)
+	{
+		if (Content[i].ItemID == "")
+		{
+			Content[i].ItemID = "None";
+			Content[i].Quantity = 0;
+			Content[i].Equipped = false;
+		}
+	}
+
+}
+
+void UInventoryComponent::UseItemEvent(int Index)
+{
+	UseItem(Index);
+	Update();
+}
+
+void UInventoryComponent::Interact(AActor* TargetActor)
+{
+}
+
+void UInventoryComponent::EquipEvent(int Index)
+{
+	//Add Dispatch
+	EquipWeapon(Index);
+	Update();
 }
 
 void UInventoryComponent::InteractionTrace()
@@ -154,14 +190,120 @@ FVector UInventoryComponent::GetDropLocation() const
 
 void UInventoryComponent::TransferSlots(int SourceIndex, UInventoryComponent* SourceInventory, int DestinationIndex)
 {
+	FSlotStruct LocalContent = SourceInventory->Content[SourceIndex];
+	if (DestinationIndex >= 0)
+	{
+		if (LocalContent.ItemID == Content[DestinationIndex].ItemID)
+		{
+			FName tempName;
+			int tempValue = FMath::Clamp(LocalContent.Quantity + Content[DestinationIndex].Quantity - GetLimit(LocalContent.ItemID), 0, GetLimit(LocalContent.ItemID));
+			if (tempValue > 0)
+			{
+				tempName = LocalContent.ItemID;
+			}
+			else
+			{
+				tempName = "None";
+			}
+			SourceInventory->Content[SourceIndex].ItemID = tempName;
+			SourceInventory->Content[SourceIndex].Quantity= tempValue;
+
+			Content[DestinationIndex].ItemID = LocalContent.ItemID;
+			Content[DestinationIndex].Quantity =
+				FMath::Clamp(LocalContent.Quantity + Content[DestinationIndex].Quantity, 0, GetLimit(LocalContent.ItemID));
+			Update();
+			SourceInventory->Update();
+		}
+		else
+		{
+			SourceInventory->Content[SourceIndex] = Content[DestinationIndex];
+			Content[DestinationIndex] = LocalContent;
+			Update();
+			SourceInventory->Update();
+		}
+	}
 }
 
 void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Success, int& QuantityRemaining)
 {
+	int LocalQuantityRemaining = Quantity;
+	bool LocalHasFailed = false;
+	int LocalIndex;
+	bool HasFoundSlot;
+	while (LocalQuantityRemaining > 0 && !LocalHasFailed)
+	{
+		FindSlot(ItemID, LocalIndex, HasFoundSlot);
+		if (HasFoundSlot)
+		{
+			AddToStack(LocalIndex, 1);
+			--LocalQuantityRemaining;
+			Update();
+		}
+		else
+		{
+			if (LocalIndex != -1)
+			{
+				LocalHasFailed = true;
+			}
+			else
+			{
+				int temp = 0;
+				if (AnyEmptySlots(temp))
+				{
+					if (CreateStack(ItemID, 1))
+					{
+						--LocalQuantityRemaining;
+						Update();
+					}
+					else
+					{
+						LocalHasFailed = true;
+					}
+				}
+				else
+				{
+					LocalHasFailed = true;
+				}
+			}
+		}
+	}
+	Success = !LocalHasFailed;
+	QuantityRemaining = LocalQuantityRemaining;
+	return;
 }
 
 void UInventoryComponent::RemoveFromInventory(int Index, bool RemoveAll, bool IsUsed)
 {
+	FName LocalItem = Content[Index].ItemID;
+	int LocalQuantity = Content[Index].Quantity;
+
+	if (RemoveAll || LocalQuantity == 1)
+	{
+		Content[Index].ItemID = "None";
+		Content[Index].Quantity = 0;
+		Content[Index].Equipped = false;
+		if (IsUsed)
+		{
+
+		}
+		else
+		{
+			DropItem(LocalItem, LocalQuantity);
+		}
+	}
+	else
+	{
+		Content[Index].Quantity = LocalQuantity - 1;
+		if (IsUsed)
+		{
+
+		}
+		else
+		{
+			DropItem(LocalItem, 1);
+		}
+	}
+	Update();
 }
 
 void UInventoryComponent::EquipWeapon(int Index)
