@@ -14,13 +14,3 @@ void AItem_Onion::BeginPlay()
 {
 	Super::BeginPlay();
 }
-
-void AItem_Onion::HandleInteract(ABasePlayer* PlayerCharacter)
-{
-	Super::HandleInteract(PlayerCharacter);
-}
-
-FText AItem_Onion::LookAt()
-{
-	return Super::LookAt();
-}

@@ -46,7 +46,6 @@ void UInventoryComponent::InteractEvent(const FInputActionValue& Value)
 {
 	if (LookAtActor)
 	{
-		UE_LOG(Game, Error, TEXT("Found onion"));
 		Interact(LookAtActor);
 	}
 }
@@ -81,7 +80,6 @@ void UInventoryComponent::Interact(AActor* TargetActor)
 	UItemComponent* Comp = TargetActor->GetComponentByClass<class UItemComponent>();
 	if (IsValid(Comp))
 	{
-		UE_LOG(Game, Error, TEXT("Interact Found"));
 		Comp->HandleInteract(Cast<ABasePlayer>(GetOwner()));
 	}
 
@@ -97,27 +95,49 @@ void UInventoryComponent::EquipEvent(int Index)
 void UInventoryComponent::InteractionTrace()
 {
 	FHitResult HitActor;
-	float Radius = 150.0f;
-	FVector Start = FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y,15.0f);
-	FVector End = Start + FVector(GetOwner()->GetActorForwardVector().X * InteractRange, GetOwner()->GetActorForwardVector().Y * InteractRange, 15.0f);
+	float Radius = 15.0f;
+	FVector Start = FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y, 15.0f) 
+		+ FVector(GetOwner()->GetActorForwardVector().X, GetOwner()->GetActorForwardVector().Y, 0.0f) * InteractRange;
+	FVector End = Start;
 	ECollisionChannel Channel = ECC_GameTraceChannel1;
 	FCollisionQueryParams Params;
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
 	Params.AddIgnoredActor(GetOwner());
-	
-	if (GetWorld()->LineTraceSingleByChannel(HitActor, Start, End, Channel, Params))
+
+	if (GetWorld()->SweepSingleByChannel(HitActor, End, Start, FQuat::Identity, Channel, Sphere, Params))
 	{
-		DrawDebugLine(GetWorld(), Start, HitActor.ImpactPoint, FColor::Red, false, -1.0f, 0, 2.0f);
-		DrawDebugSphere(GetWorld(), HitActor.ImpactPoint,10.0f, 10, FColor::Green);
+		DrawDebugSphere(GetWorld(),Start,Radius, 10, FColor::Green);
 		if (HitActor.GetActor() != LookAtActor)
 		{
 			LookAtActor = HitActor.GetActor();
+			InteractInterface = Cast<IInteractInterface>(LookAtActor);
+			if (InteractInterface)
+			{
+				InteractInterface->LookAt();
+			}
+		}
+		else
+		{
+			if(InteractInterface)	
+			{
+				InteractInterface->WalkedAway();
+			}
+			LookAtActor = HitActor.GetActor();
+			InteractInterface = Cast<IInteractInterface>(LookAtActor);
+			if (InteractInterface)
+			{
+				InteractInterface->LookAt();
+			}
 		}
 	}
 	else
 	{
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1.0f, 0, 2.0f);
+		DrawDebugSphere(GetWorld(), Start, Radius, 10, FColor::Red);
+		if (InteractInterface)
+		{
+			InteractInterface->WalkedAway();
+		}
 	}
-
 }
 
 void UInventoryComponent::FindSlot(FName ItemID, int& Index, bool& isSlotFound)
@@ -185,7 +205,6 @@ bool UInventoryComponent::CreateStack(FName ItemID, int Quantity)
 	int Index;
 	if (AnyEmptySlots(Index))
 	{
-		UE_LOG(Game, Error, TEXT("Empty Slot Found"));
 		Content[Index] = FSlotStruct(ItemID, Quantity, false);
 		return true;
 	}
@@ -260,21 +279,18 @@ void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Succe
 	bool HasFoundSlot;
 	while (LocalQuantityRemaining > 0 && !LocalHasFailed)
 	{
-		UE_LOG(Game, Error, TEXT("in while loop Found"));
 		FindSlot(ItemID, LocalIndex, HasFoundSlot);
 		if (HasFoundSlot)
 		{
 			AddToStack(LocalIndex, 1);
 			--LocalQuantityRemaining;
 			Update();
-			UE_LOG(Game, Error, TEXT("found slot Found"));
 		}
 		else
 		{
 			if (LocalIndex != -1)
 			{
 				LocalHasFailed = true;
-				UE_LOG(Game, Error, TEXT("Local failed Found"));
 			}
 			else
 			{
@@ -285,7 +301,6 @@ void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Succe
 					{
 						--LocalQuantityRemaining;
 						Update();
-						UE_LOG(Game, Error, TEXT("slot Found"));
 					}
 					else
 					{
@@ -294,7 +309,6 @@ void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Succe
 				}
 				else
 				{
-					UE_LOG(Game, Error, TEXT("did not find slots Found"));
 					LocalHasFailed = true;
 				}
 			}

@@ -19,7 +19,4 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	void HandleInteract(class ABasePlayer* PlayerCharacter) override;
-
-	FText LookAt() override;
 };

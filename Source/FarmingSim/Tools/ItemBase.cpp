@@ -33,13 +33,3 @@ void AItemBase::Tick(float DeltaTime)
 
 }
 
-void AItemBase::HandleInteract(ABasePlayer* PlayerCharacter)
-{
-	ItemComp->HandleInteract(PlayerCharacter);
-}
-
-FText AItemBase::LookAt()
-{
-	return ItemComp->LookAt();
-}
-

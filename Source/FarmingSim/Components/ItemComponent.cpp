@@ -40,13 +40,11 @@ void UItemComponent::HandleInteract(ABasePlayer* PlayerCharacter)
 	if (tempInventory)
 	{
 		//Add Dispatcher
-		UE_LOG(Game, Error, TEXT("Inventory Found"));
 		bool Success = false;
 		int QuantityRemaining = 0;
 		tempInventory->AddToInventory(ItemID.RowName, Quantity, Success, QuantityRemaining);
 		if (Success)
 		{	
-			UE_LOG(Game, Error, TEXT("Done Found"));
 			GetOwner()->Destroy();
 		}
 	}
@@ -54,7 +52,10 @@ void UItemComponent::HandleInteract(ABasePlayer* PlayerCharacter)
 
 FText UItemComponent::LookAt()
 {
-	UE_LOG(Game, Error, TEXT("Onion"));
 	return FText();
+}
+
+void UItemComponent::WalkedAway()
+{
 }
 

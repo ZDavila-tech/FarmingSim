@@ -24,4 +24,5 @@ class FARMINGSIM_API IInteractInterface
 public:
 	virtual void HandleInteract(class ABasePlayer* PlayerCharacter) = 0;
 	virtual FText LookAt() = 0;
+	virtual void WalkedAway() = 0;
 };

@@ -42,6 +42,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ItemDataTable;
 
+	class IInteractInterface* InteractInterface;
+
 
 public:	
 	// Called every frame

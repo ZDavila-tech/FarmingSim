@@ -33,4 +33,5 @@ public:
 
 	void HandleInteract(class ABasePlayer* PlayerCharacter) override;
 	FText LookAt() override;
+	void WalkedAway() override;
 };

@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../Interfaces/InteractInterface.h"
 #include "ItemBase.generated.h"
 
 UCLASS(Abstract)
-class FARMINGSIM_API AItemBase : public AActor, public IInteractInterface
+class FARMINGSIM_API AItemBase : public AActor
 {
 	GENERATED_BODY()
 	
@@ -33,7 +32,4 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void HandleInteract(class ABasePlayer* PlayerCharacter) override;
-
-	FText LookAt() override;
 };

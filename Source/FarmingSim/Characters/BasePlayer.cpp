@@ -147,14 +147,6 @@ void ABasePlayer::UseItem(const FInputActionValue& Value)
 	UE_LOG(Game, Error, TEXT("Saved Game"));
 }
 
-void ABasePlayer::HandleInteract(ABasePlayer* PlayerCharacter)
-{
-}
-
-FText ABasePlayer::LookAt()
-{
-	return FText();
-}
 
 
 

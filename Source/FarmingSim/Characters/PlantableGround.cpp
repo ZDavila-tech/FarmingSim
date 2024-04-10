@@ -7,6 +7,7 @@
 #include "../Widgets/PlotWidget.h"
 #include "Components/WidgetComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "../FarmingSim.h"
 
 // Sets default values
@@ -21,6 +22,11 @@ APlantableGround::APlantableGround()
 	StaticMesh->SetupAttachment(RootComponent);
 
 	StaticMesh->SetWorldScale3D(FVector(0.39f, 0.39f, 0.01f));
+
+	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
+	BoxCollider->SetupAttachment(StaticMesh);
+	BoxCollider->SetWorldLocation(FVector(0.0f, 0.0f, 1200.0f));
+	BoxCollider->SetWorldScale3D(FVector(2.0f, 2.0f, 50.0f));
 
 	Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Plot Widget"));
 	Widget->SetupAttachment(RootComponent);
@@ -43,6 +49,21 @@ void APlantableGround::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
+{
+}
+
+FText APlantableGround::LookAt()
+{
+	Widget->SetVisibility(true);
+	return FText();
+}
+
+void APlantableGround::WalkedAway()
+{
+	Widget->SetVisibility(false);
 }
 
 void APlantableGround::LookAtPlot(ABasePlayer PlayerCharacter)

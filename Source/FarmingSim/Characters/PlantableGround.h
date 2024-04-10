@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../Interfaces/FarmingInterface.h"
+#include "../Interfaces/InteractInterface.h"
 #include "PlantableGround.generated.h"
 
 UCLASS()
-class FARMINGSIM_API APlantableGround : public AActor, public IFarmingInterface
+class FARMINGSIM_API APlantableGround : public AActor, public IFarmingInterface, public IInteractInterface
 {
 	GENERATED_BODY()
 	
@@ -26,6 +27,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UWidgetComponent* Widget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBoxComponent* BoxCollider;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* StaticMesh;
 
@@ -37,6 +41,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Interact Interface
+	void HandleInteract(class ABasePlayer* PlayerCharacter) override;
+
+	FText LookAt() override;
+
+	void WalkedAway() override;
+
+	//Farming Interface
 	void LookAtPlot(class ABasePlayer PlayerCharacter) override;
 	//Plant trees in area
 	void PlantTrees(class ABasePlayer PlayerCharacter) override;
