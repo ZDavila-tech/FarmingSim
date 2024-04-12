@@ -8,6 +8,7 @@
 #include "Components/WidgetComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Materials/Material.h"
 #include "../FarmingSim.h"
 
 // Sets default values
@@ -42,6 +43,9 @@ void APlantableGround::BeginPlay()
 	Super::BeginPlay();
 
 	Widget->SetVisibility(false);
+
+	StaticMesh->SetMaterial(0, GrassMaterial);
+
 }
 
 // Called every frame

@@ -34,8 +34,19 @@ protected:
 	class UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class AActor> SpawnClass;
+	class UMaterial* GrassMaterial;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMaterial* DirtMaterial;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool isPlowed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool isWatered;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool isEmpty;
 
 public:	
 	// Called every frame
