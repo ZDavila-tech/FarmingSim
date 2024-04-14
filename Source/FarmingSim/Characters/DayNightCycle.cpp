@@ -5,7 +5,10 @@
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Components/VolumetricCloudComponent.h"
+#include "SunPosition.h"
+
 
 // Sets default values
 ADayNightCycle::ADayNightCycle()
@@ -23,16 +26,48 @@ ADayNightCycle::ADayNightCycle()
 	CompassMesh->SetUsingAbsoluteRotation(true);
 
 	DirectionalLight = CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("Directional Light"));
+	DirectionalLight->SetupAttachment(RootComponent);
+	DirectionalLight->SetWorldLocation(FVector(0.0f, 0.0f, 100.0f));
+	DirectionalLight->Intensity = 2.75f;
+	DirectionalLight->LightSourceAngle = 0.5f;
+	DirectionalLight->IndirectLightingIntensity = 2.0f;
+
+	Moon = CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("Moon"));
+	Moon->SetupAttachment(DirectionalLight);
+	Moon->SetWorldRotation(FRotator(180.0f, 0.0f, 0.0f));
+	Moon->Intensity = 0.26f;
+	Moon->LightSourceAngle = 0.0f;
+	Moon->bUseTemperature = true;
+	Moon->Temperature = 12000.0f;
+
 	SM_SkySphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_SkySphere"));
-	SM_SkySphere->SetupAttachment(DirectionalLight);
+	SM_SkySphere->SetupAttachment(Moon);
+	SM_SkySphere->SetWorldScale3D(FVector(150000.0f, 150000.0f, 150000.0f));
+
 	ExpontentialHeightFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("Exponential Height Fog"));
 	VolumetricCloud = CreateDefaultSubobject<UVolumetricCloudComponent>(TEXT("Volumetric Cloud"));
+
+	LightTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
+
+	//UpdateFunction.BindDynamic(this, &ADayNightCycle::TimelineFloatReturned);
+	UpdateFunction.BindUFunction(this, FName("TimelineFloatReturned"));
+	TimelineFinished.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
 }
 
 // Called when the game starts or when spawned
 void ADayNightCycle::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (LightCurve)
+	{
+		//LightTimeLine->AddInterpFloat(LightCurve, UpdateFunction, FName("Time"));
+		//LightTimeLine->SetTimelineFinishedFunc(TimelineFinished);
+
+		LightTimeLine->SetLooping(false);
+		LightTimeLine->SetIgnoreTimeDilation(true);
+		PlayTimeline();
+	}
 	
 }
 
@@ -41,5 +76,104 @@ void ADayNightCycle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ADayNightCycle::PlayTimeline()
+{
+	LightTimeLine->Play();
+}
+
+void ADayNightCycle::SetTime(float Time)
+{
+	TimeToSet = Time;
+	LightTimeLine->SetNewTime(TimeToSet);
+}
+
+void ADayNightCycle::AddTime(float TimeToAdd)
+{
+	TimeToSet = (TimeToAdd + ClockTime) * 150.0f;
+
+	if (TimeToAdd + ClockTime >= 24.0f)
+	{
+		TimeToSet = (TimeToSet - 24.0f) * 150.0f;
+		UpdateDate();
+		LightTimeLine->SetNewTime(TimeToSet);
+	}
+	else
+	{
+		LightTimeLine->SetNewTime(TimeToSet);
+	}
+}
+
+void ADayNightCycle::UpdateSun()
+{
+	FSunPositionData SunData;
+	if(DirectionalLight)
+	{
+		USunPositionFunctionLibrary::GetSunPosition(Latitude, Longitude, TimeZone, false, Year, Month, Day,
+			FTimespan::FromHours(ClockTime).GetHours(), FTimespan::FromHours(ClockTime).GetMinutes(), FTimespan::FromHours(ClockTime).GetSeconds(), SunData);
+
+		Elevation = SunData.Elevation;
+		CorrectedElevation = SunData.CorrectedElevation;
+		Azimuth = SunData.Azimuth;
+
+		DirectionalLight->SetWorldRotation(FRotator(CorrectedElevation, Azimuth, 0.0f));
+	}
+
+	if (CompassMesh)
+	{
+		CompassMesh->SetWorldRotation(FRotator(0.0f, NorthOffset + 90.0f, 0.0f));
+	}
+}
+
+void ADayNightCycle::UpdateDate()
+{
+	if (Day + 1 > FDateTime::DaysInMonth(Year, Month))
+	{
+		Day = 1;
+	}
+	else
+	{
+		Day++;
+	}
+
+	if (Month + 1 > 12)
+	{
+		Month = 1;
+	}
+	else
+	{
+		Month++;
+	}
+}
+
+int ADayNightCycle::GetDateFormat(float SolarTime, int& Hour, int& Minute)
+{
+	Hour = int(truncf(SolarTime) / 24.0f);
+
+	Minute = int(trunc((SolarTime - Hour) * 60.0f) / 60.0f);
+
+	return 1;
+}
+
+void ADayNightCycle::TimelineFloatReturned(float value)
+{
+	ClockTime = value;
+	
+	switch (DirectionalLight->Mobility)
+	{
+	case EComponentMobility::Movable:
+		UpdateSun();
+		break;
+	case EComponentMobility::Static:
+		break;
+	case EComponentMobility::Stationary:
+		break;
+	}
+}
+
+void ADayNightCycle::OnTimelineFinished()
+{
+	UpdateDate();
 }
 
