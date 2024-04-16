@@ -23,8 +23,12 @@ void UUI::SetHealth(float PercentHealth)
 	BAR_Health->SetPercent(PercentHealth);
 }
 
-void UUI::SetTime()
+void UUI::SetTime(int _Month, int _Date, int _Year)
 {
+	FText Date;
+	Date.AsDate(FDateTime(_Year, _Month, _Date));
+	
+	TXT_Date->SetText(Date);
 }
 
 void UUI::SetData()

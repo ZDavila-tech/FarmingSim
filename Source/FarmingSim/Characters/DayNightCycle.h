@@ -7,7 +7,7 @@
 #include "Components/TimelineComponent.h"
 #include "DayNightCycle.generated.h"
 
-class UCurveFloat;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FDateDelegate, int, Month, int, Date, int, Year);
 
 UCLASS()
 class FARMINGSIM_API ADayNightCycle : public AActor
@@ -28,16 +28,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USkyLightComponent* SkyLight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USkyAtmosphereComponent* Atmosphere;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* CompassMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UStaticMesh* SMCompass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UDirectionalLightComponent* DirectionalLight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UDirectionalLightComponent* Moon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -49,8 +49,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCurveFloat* LightCurve;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UTimelineComponent* LightTimeLine;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "UIVariables|Delagates")
+	FDateDelegate OnDayChanged;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Location")
 	float Latitude;
@@ -85,13 +88,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
 	float ClockTime;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float TimeToSet;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Time")
 	float RealTimeDayNight;
 
 	FOnTimelineFloat UpdateFunction;
+	FOnTimelineEvent DayEnded;
 	FOnTimelineEvent TimelineFinished;
 
 public:	
@@ -113,4 +117,6 @@ public:
 
 	UFUNCTION()
 	void OnTimelineFinished();
+
+	FDateDelegate* GetDateDelegate();
 };

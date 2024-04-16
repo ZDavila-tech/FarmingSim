@@ -4,6 +4,7 @@
 #include "FarmingSimHUD.h"
 #include "GameFramework/PlayerController.h"
 #include "../Widgets/UI.h"
+#include "../Characters/DayNightCycle.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Widgets/MainMenu.h"
 

@@ -30,6 +30,9 @@ protected:
 
 	class UMainMenu* MainMenu;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class ADayNightCycle* DayNightCycle;
+	TArray<AActor*> OutActor;
 public:
 	
 	AFarmingSimHUD();

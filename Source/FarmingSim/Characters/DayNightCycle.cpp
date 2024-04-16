@@ -3,9 +3,11 @@
 
 #include "DayNightCycle.h"
 #include "Components/DirectionalLightComponent.h"
+#include "Components/SkyAtmosphereComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
 #include "Components/VolumetricCloudComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "SunPosition.h"
 
 
@@ -19,11 +21,14 @@ ADayNightCycle::ADayNightCycle()
 
 	SkyLight = CreateDefaultSubobject<USkyLightComponent>(TEXT("Sky Light Component"));
 	SkyLight->SetWorldLocation(FVector(0.0f, 0.0f, 150.0f));
+	SkyLight->SetupAttachment(RootComponent);
 
+	Atmosphere = CreateDefaultSubobject<USkyAtmosphereComponent>(TEXT("Sky Atmosphere"));
+	Atmosphere->SetupAttachment(RootComponent);
 
 	CompassMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Compass Mesh"));
 	CompassMesh->SetUsingAbsoluteRotation(true);
-	CompassMesh->SetStaticMesh(SMCompass);
+	CompassMesh->SetupAttachment(RootComponent);
 
 	DirectionalLight = CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("Directional Light"));
 	DirectionalLight->SetupAttachment(RootComponent);
@@ -43,12 +48,17 @@ ADayNightCycle::ADayNightCycle()
 	Moon->AtmosphereSunLightIndex = 1;
 
 	ExpontentialHeightFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("Exponential Height Fog"));
+	ExpontentialHeightFog->SetupAttachment(RootComponent);
 	VolumetricCloud = CreateDefaultSubobject<UVolumetricCloudComponent>(TEXT("Volumetric Cloud"));
+	VolumetricCloud->SetupAttachment(RootComponent);
+
 
 	LightTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 
 	UpdateFunction.BindDynamic(this, &ADayNightCycle::TimelineUpdate);
 	TimelineFinished.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
+	DayEnded.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
+	
 }
 
 // Called when the game starts or when spawned
@@ -56,13 +66,13 @@ void ADayNightCycle::BeginPlay()
 {
 	Super::BeginPlay();
 	LightTimeLine->SetLooping(true);
+
 	LightTimeLine->AddInterpFloat(LightCurve, UpdateFunction);
 	LightTimeLine->SetTimelineFinishedFunc(TimelineFinished);
+	LightTimeLine->AddEvent(24.0, DayEnded);
 
 	LightTimeLine->SetPlayRate((1.0f / (RealTimeDayNight * 60.0f)) * 24.0f);
 	LightTimeLine->Play();
-
-	
 }
 
 // Called every frame
@@ -121,20 +131,20 @@ void ADayNightCycle::UpdateDate()
 	if (Day + 1 > FDateTime::DaysInMonth(Year, Month))
 	{
 		Day = 1;
+		if (Month + 1 > 12)
+		{
+			Month = 1;
+			Year++;
+		}
+		else
+		{
+			Month++;
+		}
 	}
 	else
 	{
 		Day++;
-	}
-
-	if (Month + 1 > 12)
-	{
-		Month = 1;
-	}
-	else
-	{
-		Month++;
-	}
+	}	
 }
 
 int ADayNightCycle::GetDateFormat(float SolarTime, int& Hour, int& Minute)
@@ -149,7 +159,7 @@ int ADayNightCycle::GetDateFormat(float SolarTime, int& Hour, int& Minute)
 void ADayNightCycle::TimelineUpdate(float value)
 {
 	ClockTime = value;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), ClockTime));
+	
 	switch (DirectionalLight->Mobility)
 	{
 	case EComponentMobility::Movable:
@@ -164,6 +174,13 @@ void ADayNightCycle::TimelineUpdate(float value)
 
 void ADayNightCycle::OnTimelineFinished()
 {
+	
 	UpdateDate();
+	OnDayChanged.Broadcast(Month, Day, Year);
+}
+
+FDateDelegate* ADayNightCycle::GetDateDelegate()
+{
+	return &OnDayChanged;
 }
 

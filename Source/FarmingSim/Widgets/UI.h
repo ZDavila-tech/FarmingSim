@@ -38,7 +38,7 @@ public:
 	void SetHealth(float PercentHealth);
 
 	UFUNCTION(BlueprintCallable)
-	void SetTime();
+	void SetTime(int _Month, int _Date, int _Year);
 
 	UFUNCTION(BlueprintCallable)
 	void SetData();
