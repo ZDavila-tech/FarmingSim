@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "DayNightCycle.generated.h"
-
-DECLARE_DYNAMIC_DELEGATE(FOnTimelineEvent);
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnTimelineFloat, float, Output);
+//
+//DECLARE_DYNAMIC_DELEGATE(FOnTimelineEvent);
+//DECLARE_DYNAMIC_DELEGATE_OneParam(FOnTimelineFloat, float, Output);
 
 UCLASS()
 class FARMINGSIM_API ADayNightCycle : public AActor
@@ -38,9 +38,6 @@ protected:
 	class UDirectionalLightComponent* Moon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UStaticMeshComponent* SM_SkySphere;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UExponentialHeightFogComponent* ExpontentialHeightFog;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -49,7 +46,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCurveFloat* LightCurve;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UTimelineComponent* LightTimeLine;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Location")
@@ -82,14 +79,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Date")
 	int Day;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Time")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
 	float ClockTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float TimeToSet;
 
-	FOnTimelineFloat UpdateFunction;
-	FOnTimelineEvent TimelineFinished;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Time")
+	float RealTimeDayNight;
+
+	//FOnTimelineFloat UpdateFunction;
+	//FOnTimelineEvent TimelineFinished;
 
 public:	
 	// Called every frame
@@ -97,7 +97,7 @@ public:
 
 	void PlayTimeline();
 
-	void SetTime(float Time);
+	void SetTime(float Time, UTimelineComponent* Timeline);
 
 	void AddTime(float TimeToAdd);
 

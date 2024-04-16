@@ -39,10 +39,8 @@ ADayNightCycle::ADayNightCycle()
 	Moon->LightSourceAngle = 0.0f;
 	Moon->bUseTemperature = true;
 	Moon->Temperature = 12000.0f;
-
-	SM_SkySphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_SkySphere"));
-	SM_SkySphere->SetupAttachment(Moon);
-	SM_SkySphere->SetWorldScale3D(FVector(150000.0f, 150000.0f, 150000.0f));
+	Moon->ForwardShadingPriority = 1;
+	Moon->AtmosphereSunLightIndex = 1;
 
 	ExpontentialHeightFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("Exponential Height Fog"));
 	VolumetricCloud = CreateDefaultSubobject<UVolumetricCloudComponent>(TEXT("Volumetric Cloud"));
@@ -50,24 +48,17 @@ ADayNightCycle::ADayNightCycle()
 	LightTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 
 	//UpdateFunction.BindDynamic(this, &ADayNightCycle::TimelineFloatReturned);
-	UpdateFunction.BindUFunction(this, FName("TimelineFloatReturned"));
-	TimelineFinished.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
+	////UpdateFunction.BindUFunction(this, FName("TimelineFloatReturned"));
+	//TimelineFinished.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
 }
 
 // Called when the game starts or when spawned
 void ADayNightCycle::BeginPlay()
 {
 	Super::BeginPlay();
+	LightTimeLine->SetPlayRate((1.0f / (RealTimeDayNight * 60.0f)) * 24.0f);
+	LightTimeLine->Play();
 
-	if (LightCurve)
-	{
-		//LightTimeLine->AddInterpFloat(LightCurve, UpdateFunction, FName("Time"));
-		//LightTimeLine->SetTimelineFinishedFunc(TimelineFinished);
-
-		LightTimeLine->SetLooping(false);
-		LightTimeLine->SetIgnoreTimeDilation(true);
-		PlayTimeline();
-	}
 	
 }
 
@@ -76,6 +67,7 @@ void ADayNightCycle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 }
 
 void ADayNightCycle::PlayTimeline()
@@ -83,10 +75,10 @@ void ADayNightCycle::PlayTimeline()
 	LightTimeLine->Play();
 }
 
-void ADayNightCycle::SetTime(float Time)
+void ADayNightCycle::SetTime(float Time, UTimelineComponent* Timeline)
 {
 	TimeToSet = Time;
-	LightTimeLine->SetNewTime(TimeToSet);
+	Timeline->SetNewTime(TimeToSet);
 }
 
 void ADayNightCycle::AddTime(float TimeToAdd)
