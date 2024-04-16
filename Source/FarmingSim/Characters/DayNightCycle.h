@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "DayNightCycle.generated.h"
-//
-//DECLARE_DYNAMIC_DELEGATE(FOnTimelineEvent);
-//DECLARE_DYNAMIC_DELEGATE_OneParam(FOnTimelineFloat, float, Output);
+
+class UCurveFloat;
 
 UCLASS()
 class FARMINGSIM_API ADayNightCycle : public AActor
@@ -28,13 +28,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USkyLightComponent* SkyLight;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UStaticMeshComponent* CompassMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UStaticMesh* SMCompass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UDirectionalLightComponent* DirectionalLight;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UDirectionalLightComponent* Moon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -46,7 +49,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCurveFloat* LightCurve;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UTimelineComponent* LightTimeLine;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Location")
@@ -88,16 +91,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Time")
 	float RealTimeDayNight;
 
-	//FOnTimelineFloat UpdateFunction;
-	//FOnTimelineEvent TimelineFinished;
+	FOnTimelineFloat UpdateFunction;
+	FOnTimelineEvent TimelineFinished;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void PlayTimeline();
-
-	void SetTime(float Time, UTimelineComponent* Timeline);
+	void SetTime(float Time);
 
 	void AddTime(float TimeToAdd);
 
@@ -108,7 +109,7 @@ public:
 	int GetDateFormat(float SolarTime, int& Hour, int& Minute);
 
 	UFUNCTION()
-	void TimelineFloatReturned(float value);
+	void TimelineUpdate(float value);
 
 	UFUNCTION()
 	void OnTimelineFinished();

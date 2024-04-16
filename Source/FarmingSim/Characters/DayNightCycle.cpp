@@ -5,7 +5,6 @@
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
-#include "Components/TimelineComponent.h"
 #include "Components/VolumetricCloudComponent.h"
 #include "SunPosition.h"
 
@@ -24,6 +23,7 @@ ADayNightCycle::ADayNightCycle()
 
 	CompassMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Compass Mesh"));
 	CompassMesh->SetUsingAbsoluteRotation(true);
+	CompassMesh->SetStaticMesh(SMCompass);
 
 	DirectionalLight = CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("Directional Light"));
 	DirectionalLight->SetupAttachment(RootComponent);
@@ -47,15 +47,18 @@ ADayNightCycle::ADayNightCycle()
 
 	LightTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 
-	//UpdateFunction.BindDynamic(this, &ADayNightCycle::TimelineFloatReturned);
-	////UpdateFunction.BindUFunction(this, FName("TimelineFloatReturned"));
-	//TimelineFinished.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
+	UpdateFunction.BindDynamic(this, &ADayNightCycle::TimelineUpdate);
+	TimelineFinished.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
 }
 
 // Called when the game starts or when spawned
 void ADayNightCycle::BeginPlay()
 {
 	Super::BeginPlay();
+	LightTimeLine->SetLooping(true);
+	LightTimeLine->AddInterpFloat(LightCurve, UpdateFunction);
+	LightTimeLine->SetTimelineFinishedFunc(TimelineFinished);
+
 	LightTimeLine->SetPlayRate((1.0f / (RealTimeDayNight * 60.0f)) * 24.0f);
 	LightTimeLine->Play();
 
@@ -70,15 +73,10 @@ void ADayNightCycle::Tick(float DeltaTime)
 
 }
 
-void ADayNightCycle::PlayTimeline()
-{
-	LightTimeLine->Play();
-}
-
-void ADayNightCycle::SetTime(float Time, UTimelineComponent* Timeline)
+void ADayNightCycle::SetTime(float Time)
 {
 	TimeToSet = Time;
-	Timeline->SetNewTime(TimeToSet);
+	LightTimeLine->SetNewTime(TimeToSet);
 }
 
 void ADayNightCycle::AddTime(float TimeToAdd)
@@ -148,10 +146,10 @@ int ADayNightCycle::GetDateFormat(float SolarTime, int& Hour, int& Minute)
 	return 1;
 }
 
-void ADayNightCycle::TimelineFloatReturned(float value)
+void ADayNightCycle::TimelineUpdate(float value)
 {
 	ClockTime = value;
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), ClockTime));
 	switch (DirectionalLight->Mobility)
 	{
 	case EComponentMobility::Movable:
