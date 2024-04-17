@@ -56,9 +56,10 @@ ADayNightCycle::ADayNightCycle()
 	LightTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 
 	UpdateFunction.BindDynamic(this, &ADayNightCycle::TimelineUpdate);
+	DayBegan.BindDynamic(this, &ADayNightCycle::TimelineBegin);
 	TimelineFinished.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
 	DayEnded.BindDynamic(this, &ADayNightCycle::OnTimelineFinished);
-	
+	MinChanged.BindDynamic(this, &ADayNightCycle::MinuteChanged);
 }
 
 // Called when the game starts or when spawned
@@ -66,11 +67,19 @@ void ADayNightCycle::BeginPlay()
 {
 	Super::BeginPlay();
 	LightTimeLine->SetLooping(true);
-
 	LightTimeLine->AddInterpFloat(LightCurve, UpdateFunction);
 	LightTimeLine->SetTimelineFinishedFunc(TimelineFinished);
 	LightTimeLine->AddEvent(24.0, DayEnded);
+	LightTimeLine->AddEvent(0.0, DayBegan);
 
+	for (int j = 0; j < 24.0; j++)
+	{
+		for (float i = 0.0f; i < 1.0f; i += (1.0 / 60.0f))
+		{
+			LightTimeLine->AddEvent(j+i, MinChanged);
+		}
+	}
+	
 	LightTimeLine->SetPlayRate((1.0f / (RealTimeDayNight * 60.0f)) * 24.0f);
 	LightTimeLine->Play();
 }
@@ -149,11 +158,17 @@ void ADayNightCycle::UpdateDate()
 
 int ADayNightCycle::GetDateFormat(float SolarTime, int& Hour, int& Minute)
 {
-	Hour = int(truncf(SolarTime) / 24.0f);
+	int Time = int(truncf(SolarTime) / 24.0f);
 
-	Minute = int(trunc((SolarTime - Hour) * 60.0f) / 60.0f);
+	Hour = int(trunc((SolarTime - Time) * 60.0f) / 60.0f);
+	Minute = int(trunc((SolarTime - Hour) * 3600 + 0.5)/60.0f);
 
 	return 1;
+}
+
+void ADayNightCycle::TimelineBegin()
+{
+	OnDayChanged.Broadcast(Month, Day, Year);
 }
 
 void ADayNightCycle::TimelineUpdate(float value)
@@ -174,13 +189,24 @@ void ADayNightCycle::TimelineUpdate(float value)
 
 void ADayNightCycle::OnTimelineFinished()
 {
-	
 	UpdateDate();
 	OnDayChanged.Broadcast(Month, Day, Year);
+}
+
+void ADayNightCycle::MinuteChanged()
+{
+	int Hour, Minute;
+	GetDateFormat(ClockTime, Hour, Minute);
+	OnMinuteChanged.Broadcast(Hour, Minute);
 }
 
 FDateDelegate* ADayNightCycle::GetDateDelegate()
 {
 	return &OnDayChanged;
+}
+
+FTimeDelegate* ADayNightCycle::GetTimeDelegate()
+{
+	return &OnMinuteChanged;
 }
 

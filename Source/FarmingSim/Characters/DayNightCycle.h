@@ -8,6 +8,7 @@
 #include "DayNightCycle.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FDateDelegate, int, Month, int, Date, int, Year);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTimeDelegate, int, Hour, int, Minute);
 
 UCLASS()
 class FARMINGSIM_API ADayNightCycle : public AActor
@@ -55,6 +56,9 @@ protected:
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "UIVariables|Delagates")
 	FDateDelegate OnDayChanged;
 
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "UIVariables|Delagates")
+	FTimeDelegate OnMinuteChanged;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Location")
 	float Latitude;
 
@@ -95,7 +99,9 @@ protected:
 	float RealTimeDayNight;
 
 	FOnTimelineFloat UpdateFunction;
+	FOnTimelineEvent DayBegan;
 	FOnTimelineEvent DayEnded;
+	FOnTimelineEvent MinChanged;
 	FOnTimelineEvent TimelineFinished;
 
 public:	
@@ -111,6 +117,9 @@ public:
 	void UpdateDate();
 
 	int GetDateFormat(float SolarTime, int& Hour, int& Minute);
+	
+	UFUNCTION()
+	void TimelineBegin();
 
 	UFUNCTION()
 	void TimelineUpdate(float value);
@@ -118,5 +127,9 @@ public:
 	UFUNCTION()
 	void OnTimelineFinished();
 
+	UFUNCTION()
+	void MinuteChanged();
+
 	FDateDelegate* GetDateDelegate();
+	FTimeDelegate* GetTimeDelegate();
 };
