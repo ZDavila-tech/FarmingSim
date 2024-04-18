@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Utility/FPlantStage.h"
 #include "PlantBase.generated.h"
 
 UCLASS()
@@ -68,6 +69,6 @@ public:
 	void GrowPlant(int Month, int Day, int Year);
 
 	UFUNCTION()
-	FPlantStage GetStage(int _DaysGrown);
+	void SetStage(int _DaysGrown);
 
 };

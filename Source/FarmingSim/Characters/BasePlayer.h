@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CommonCharacter.h"
 #include "InputActionValue.h"
+#include "../Utility/FPlayerInfo.h"
 #include "BasePlayer.generated.h"
 
 /**

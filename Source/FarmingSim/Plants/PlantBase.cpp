@@ -6,7 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "../Characters/DayNightCycle.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Utility/FPlantStage.h"
+
 #include "../FarmingSim.h"
 
 // Sets default values
@@ -46,35 +46,33 @@ void APlantBase::SetPlantInfo(int _DaysGrown, FVector _Location)
 	PlantInfo.DaysGrown = _DaysGrown;
 	PlantInfo.Location = _Location;
 	PlantInfo.PlantClass = this->GetClass();
-	PlantInfo.PlantStage = GetStage(_DaysGrown);
+	SetStage(_DaysGrown);
 }
 
 void APlantBase::GrowPlant(int Month, int Day, int Year)
 {
 	PlantInfo.DaysGrown++;
+	SetStage(PlantInfo.DaysGrown);
 
-	PlantInfo.PlantStage = GetStage(PlantInfo.DaysGrown);
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%d %s"), PlantInfo.DaysGrown, PlantInfo.PlantStage));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%d"), PlantInfo.DaysGrown));
 }
 
-FPlantStage APlantBase::GetStage(int _DaysGrown)
+void APlantBase::SetStage(int _DaysGrown)
 {
 	if (_DaysGrown < ToGrowing)
 	{
 		StaticMesh->SetStaticMesh(SeedlingMesh);
-
-		return FPlantStage::SEEDLING;
+		PlantInfo.PlantStage = FPlantStage::SEEDLING;
 	}
 	else if (_DaysGrown >= ToGrowing && _DaysGrown < ToHarvest)
 	{
 		StaticMesh->SetStaticMesh(GrowingMesh);
-		return FPlantStage::GROWING;
+		PlantInfo.PlantStage = FPlantStage::GROWING;
 	}
 	else
 	{
 		StaticMesh->SetStaticMesh(HarvestableMesh);
-		return FPlantStage::HARVESTABLE;
+		PlantInfo.PlantStage = FPlantStage::HARVESTABLE;
 	}
 }
 
