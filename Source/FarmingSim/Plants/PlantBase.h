@@ -29,7 +29,13 @@ protected:
 	class UStaticMesh* SeedlingMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ToGrowing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMesh* GrowingMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ToHarvest;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMesh* HarvestableMesh;
@@ -38,7 +44,7 @@ protected:
 	bool isHarvestable;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int DaysGrown;
+	FPlantStruct PlantInfo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AActor> CropClass;
@@ -56,6 +62,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
+	void SetPlantInfo(int _DaysGrown, FVector _Location);
+
+	UFUNCTION()
 	void GrowPlant(int Month, int Day, int Year);
+
+	UFUNCTION()
+	FPlantStage GetStage(int _DaysGrown);
 
 };
