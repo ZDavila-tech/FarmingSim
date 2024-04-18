@@ -57,6 +57,9 @@ protected:
 	FDateDelegate OnDayChanged;
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "UIVariables|Delagates")
+	FDateDelegate OnDayBegins;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "UIVariables|Delagates")
 	FTimeDelegate OnMinuteChanged;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Location")
@@ -131,5 +134,6 @@ public:
 	void MinuteChanged();
 
 	FDateDelegate* GetDateDelegate();
+	FDateDelegate* GetMorningDelegate();
 	FTimeDelegate* GetTimeDelegate();
 };

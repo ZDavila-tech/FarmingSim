@@ -43,8 +43,19 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AActor> CropClass;
 
+	//To access day change
+	class ADayNightCycle* DayNightCycle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ADayNightCycle> DayNightClass;
+
+	TArray<AActor*> OutActor;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void GrowPlant(int Month, int Day, int Year);
 
 };

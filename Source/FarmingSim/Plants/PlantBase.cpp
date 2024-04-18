@@ -4,6 +4,8 @@
 #include "PlantBase.h"
 #include "Engine/StaticMesh.h"
 #include "Components/StaticMeshComponent.h"
+#include "../Characters/DayNightCycle.h"
+#include "Kismet/GameplayStatics.h"
 #include "../FarmingSim.h"
 
 // Sets default values
@@ -25,9 +27,9 @@ APlantBase::APlantBase()
 void APlantBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 	StaticMesh->SetStaticMesh(SeedlingMesh);
-	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), DayNightClass, OutActor);
+	Cast<ADayNightCycle>(OutActor[0])->GetDateDelegate()->AddDynamic(this, &APlantBase::GrowPlant);
 }
 
 // Called every frame
@@ -35,5 +37,12 @@ void APlantBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void APlantBase::GrowPlant(int Month, int Day, int Year)
+{
+	DaysGrown++;
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%d"), DaysGrown));
 }
 

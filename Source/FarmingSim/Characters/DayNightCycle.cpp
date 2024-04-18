@@ -168,7 +168,7 @@ int ADayNightCycle::GetDateFormat(float SolarTime, int& Hour, int& Minute)
 
 void ADayNightCycle::TimelineBegin()
 {
-	OnDayChanged.Broadcast(Month, Day, Year);
+	OnDayBegins.Broadcast(Month, Day, Year);
 }
 
 void ADayNightCycle::TimelineUpdate(float value)
@@ -203,6 +203,11 @@ void ADayNightCycle::MinuteChanged()
 FDateDelegate* ADayNightCycle::GetDateDelegate()
 {
 	return &OnDayChanged;
+}
+
+FDateDelegate* ADayNightCycle::GetMorningDelegate()
+{
+	return &OnDayBegins;
 }
 
 FTimeDelegate* ADayNightCycle::GetTimeDelegate()

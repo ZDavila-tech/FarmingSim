@@ -32,6 +32,7 @@ void AFarmingSimHUD::BeginPlay()
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), DayNightClass, OutActor);
 	Cast<ADayNightCycle>(OutActor[0])->GetDateDelegate()->AddDynamic(UIMenu, &UUI::SetDate);
+	Cast<ADayNightCycle>(OutActor[0])->GetMorningDelegate()->AddDynamic(UIMenu, &UUI::SetDate);
 	Cast<ADayNightCycle>(OutActor[0])->GetTimeDelegate()->AddDynamic(UIMenu, &UUI::SetTime);
 }
 
