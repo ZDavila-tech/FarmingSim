@@ -32,7 +32,7 @@ void UInventorySlot::NativeConstruct()
 	}
 }
 
-FReply UInventorySlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+FReply UInventorySlot::NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	if (ItemID != " ")
 	{
@@ -63,8 +63,9 @@ FReply UInventorySlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, cons
 
 void UInventorySlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
+	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 	DragMenu = CreateWidget<UDragMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), DragMenuClass);
-	UInventoryDragDropOperation* DDSlot = CreateDefaultSubobject<UInventoryDragDropOperation>(TEXT(""));
+	UInventoryDragDropOperation* DDSlot = NewObject<UInventoryDragDropOperation>();
 	DDSlot->DefaultDragVisual = DragMenu;
 	DDSlot->SetVariables(InventoryComponent, ContentIndex);
 	OutOperation = DDSlot;
@@ -72,6 +73,7 @@ void UInventorySlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPo
 
 bool UInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
+	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 	UInventoryDragDropOperation* DDSlot = Cast<UInventoryDragDropOperation>(InOperation);
 	if (DDSlot) 
 	{
@@ -80,6 +82,10 @@ bool UInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEv
 			InventoryComponent->TransferSlots(DDSlot->GetContentIndex(), DDSlot->GetComp(), ContentIndex);
 			return true;
 		}
+	}
+	else
+	{
+		return false;
 	}
 	return false;
 }

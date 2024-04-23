@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool isEmpty;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FTransform PlotLocation;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -64,7 +67,7 @@ public:
 	//Plant trees in area
 	void PlantTrees(class ABasePlayer PlayerCharacter) override;
 	//Plant plants in area
-	void PlantSeeds(class ABasePlayer PlayerCharacter) override;
+	void PlantSeeds(class ABaseSeed* _Seed) override;
 	//Plow soil before planting
 	void PlowSoil(class ABasePlayer PlayerCharacter) override;
 	//Water plants

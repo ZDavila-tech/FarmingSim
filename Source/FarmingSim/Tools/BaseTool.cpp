@@ -25,3 +25,8 @@ void ABaseTool::Tick(float DeltaTime)
 
 }
 
+void ABaseTool::Use()
+{
+	Super::Use();
+}
+

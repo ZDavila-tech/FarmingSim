@@ -12,6 +12,7 @@
 #include "../Utility/FSlotStruct.h"
 #include "../FarmingSim.h"
 #include "../Characters/BasePlayer.h"
+#include "../Characters/PlantableGround.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -56,7 +57,7 @@ void UInventoryComponent::DropItem(FName ItemID, int Quantity)
 
 void UInventoryComponent::Update()
 {
-	//Add Dispatch
+	OnInventoryUpdate.Broadcast();
 	for (int i = 0; i < Content.Num(); i++)
 	{
 		if (Content[i].ItemID == "")
@@ -81,7 +82,15 @@ void UInventoryComponent::Interact(AActor* TargetActor)
 	if (IsValid(Comp))
 	{
 		Comp->HandleInteract(Cast<ABasePlayer>(GetOwner()));
+		return;
 	}
+	APlantableGround* Ground = Cast<APlantableGround>(TargetActor);
+	if (Ground)
+	{
+		Ground->HandleInteract(Cast<ABasePlayer>(GetOwner()));
+		return;
+	}
+	
 
 }
 
@@ -269,6 +278,7 @@ void UInventoryComponent::TransferSlots(int SourceIndex, UInventoryComponent* So
 			SourceInventory->Update();
 		}
 	}
+
 }
 
 void UInventoryComponent::AddToInventory(FName ItemID, int Quantity, bool& Success, int& QuantityRemaining)

@@ -28,6 +28,5 @@ protected:
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	FEventReply OnPreviewKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent);
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 };

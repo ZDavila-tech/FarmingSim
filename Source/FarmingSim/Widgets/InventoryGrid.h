@@ -28,6 +28,8 @@ protected:
 
 public:
 	virtual void NativeConstruct() override;
+	UFUNCTION()
 	void DisplayInventory(class UInventoryComponent* _InventoryComponent);
+	UFUNCTION()
 	void UpdateInventory();
 };

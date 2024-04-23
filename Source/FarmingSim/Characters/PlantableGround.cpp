@@ -9,6 +9,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Materials/Material.h"
+#include "../Tools/BaseSeed.h"
+#include "../Plants/PlantBase.h"
 #include "../FarmingSim.h"
 
 // Sets default values
@@ -35,6 +37,8 @@ APlantableGround::APlantableGround()
 	Widget->SetRelativeScale3D(FVector(0.198f, 0.198f, 0.198f));
 	Widget->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 
+	
+
 }
 
 // Called when the game starts or when spawned
@@ -45,6 +49,8 @@ void APlantableGround::BeginPlay()
 	Widget->SetVisibility(false);
 
 	StaticMesh->SetMaterial(0, GrassMaterial);
+	PlotLocation = GetActorTransform();
+	isEmpty = true;
 
 }
 
@@ -57,6 +63,16 @@ void APlantableGround::Tick(float DeltaTime)
 
 void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 {
+	UChildActorComponent* Tool = PlayerCharacter->GetComponentByClass<UChildActorComponent>();
+	if (Tool)
+	{
+		ABaseSeed* seed = Cast<ABaseSeed>(Tool->GetChildActor());
+		if (seed && isEmpty)
+		{
+			PlantSeeds(seed);
+		}
+		
+	}
 }
 
 FText APlantableGround::LookAt()
@@ -79,8 +95,13 @@ void APlantableGround::PlantTrees(class ABasePlayer PlayerCharacter)
 {
 }
 
-void APlantableGround::PlantSeeds(class ABasePlayer PlayerCharacter)
+void APlantableGround::PlantSeeds(class ABaseSeed* _Seed)
 {
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	GetWorld()->SpawnActor<APlantBase>(_Seed->PlantClass, PlotLocation, SpawnInfo);
+	isEmpty = false;
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Planted");
 }
 
 void APlantableGround::PlowSoil(class ABasePlayer PlayerCharacter)

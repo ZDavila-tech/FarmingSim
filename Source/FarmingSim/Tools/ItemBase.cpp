@@ -33,3 +33,11 @@ void AItemBase::Tick(float DeltaTime)
 
 }
 
+void AItemBase::ConsumeEffect()
+{
+}
+
+void AItemBase::Use()
+{
+}
+

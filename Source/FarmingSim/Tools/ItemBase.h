@@ -32,4 +32,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void ConsumeEffect();
+
+	UFUNCTION(BlueprintCallable)
+	void Use();
 };

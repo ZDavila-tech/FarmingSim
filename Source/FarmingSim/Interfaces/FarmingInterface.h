@@ -27,7 +27,7 @@ public:
 	//Plant trees in area
 	virtual void PlantTrees(class ABasePlayer PlayerCharacter) = 0;
 	//Plant plants in area
-	virtual void PlantSeeds(class ABasePlayer PlayerCharacter) = 0;
+	virtual void PlantSeeds(class ABaseSeed* _Seed) = 0;
 	//Plow soil before planting
 	virtual void PlowSoil(class ABasePlayer PlayerCharacter) = 0;
 	//Water plants

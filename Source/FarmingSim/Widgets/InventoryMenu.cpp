@@ -10,8 +10,8 @@
 void UInventoryMenu::NativeConstruct()
 {
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	
-	WBP_InventoryGrid->DisplayInventory(PC->GetPawn()->GetComponentByClass<UInventoryComponent>());
+	UInventoryComponent* InvnComp = PC->GetPawn()->GetComponentByClass<UInventoryComponent>();
+	WBP_InventoryGrid->DisplayInventory(InvnComp);
 	FInputModeUIOnly WidgetMode;
 	WidgetMode.SetWidgetToFocus(WBP_InventoryGrid->GetCachedWidget());
 	PC->SetInputMode(WidgetMode);
