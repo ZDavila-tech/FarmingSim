@@ -369,3 +369,8 @@ void UInventoryComponent::SaveInventory()
 {
 }
 
+FOnInventoryUpdate* UInventoryComponent::GetUpdateDelegate()
+{
+	return &OnInventoryUpdate;
+}
+

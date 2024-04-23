@@ -13,5 +13,21 @@ UCLASS()
 class FARMINGSIM_API UInventoryGrid : public UUserWidget
 {
 	GENERATED_BODY()
-	
+protected:
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	class UWrapBox* BOX_InventoryGrid;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UInventorySlot* InventorySlot;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<class UInventorySlot> SlotMenu;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UInventoryComponent* InventoryComponent;
+
+public:
+	virtual void NativeConstruct() override;
+	void DisplayInventory(class UInventoryComponent* _InventoryComponent);
+	void UpdateInventory();
 };

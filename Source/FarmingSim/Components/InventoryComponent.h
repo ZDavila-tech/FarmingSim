@@ -7,8 +7,9 @@
 #include "InputActionValue.h"
 #include "InventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryUpdate);
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), Blueprintable, BlueprintType)
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class FARMINGSIM_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -34,18 +35,20 @@ protected:
 	class AActor* LookAtActor;
 
 	UPROPERTY(EditDefaultsOnly)
-	int InventorySize;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<struct FSlotStruct> Content;
-
-	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ItemDataTable;
 
 	class IInteractInterface* InteractInterface;
 
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
+	FOnInventoryUpdate OnInventoryUpdate;
 
 public:	
+
+	UPROPERTY(EditDefaultsOnly)
+	int InventorySize;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<struct FSlotStruct> Content;
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -113,4 +116,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SaveInventory();
+
+	FOnInventoryUpdate* GetUpdateDelegate();
 };

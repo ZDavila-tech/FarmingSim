@@ -14,4 +14,20 @@ class FARMINGSIM_API UInventoryMenu : public UUserWidget
 {
 	GENERATED_BODY()
 	
+protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	class UInventoryGrid* WBP_InventoryGrid;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class APlayerController* PC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FKey InventoryButton;
+
+public:
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+	FEventReply OnPreviewKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent);
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 };

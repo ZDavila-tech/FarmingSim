@@ -15,6 +15,7 @@
 #include "../Components/HealthComponent.h"
 #include "../Utility/PlayerInputConfigData.h"
 #include "../Widgets/PauseMenu.h"
+#include "../Widgets/InventoryMenu.h"
 #include "../Widgets/UI.h"
 #include "../FarmingSimGameInstance.h"
 #include "../FarmingSim.h"
@@ -52,7 +53,7 @@ void ABasePlayer::BeginPlay()
 	UIRef = HUD->GetUI();
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(InputMapping, 0);;
+		Subsystem->AddMappingContext(InputMapping, 0);
 	}
 	
 	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
@@ -74,6 +75,7 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PEI->BindAction(InputActions->InputPauseMenu, ETriggerEvent::Completed, this, &ABasePlayer::OpenPause);
 	PEI->BindAction(InputActions->InputUseItem, ETriggerEvent::Completed, this, &ABasePlayer::UseItem);
 	PEI->BindAction(InputActions->InputInteract, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::InteractEvent);
+	PEI->BindAction(InputActions->InputInventory, ETriggerEvent::Completed, this, &ABasePlayer::OpenInventory);
 }
 
 void ABasePlayer::Move(const FInputActionValue& Value)
@@ -145,6 +147,17 @@ void ABasePlayer::UseItem(const FInputActionValue& Value)
 	player.PlayerTransform = GetActorTransform();
 	GameInstance->SavePlayerData(player);
 	UE_LOG(Game, Error, TEXT("Saved Game"));
+}
+
+void ABasePlayer::OpenInventory(const FInputActionValue& Value)
+{
+	InventoryMenu = CreateWidget<UInventoryMenu>(PlayerController, InventoryClass);
+	if (InventoryMenu == nullptr)
+	{
+		UE_LOG(Game, Error, TEXT("Need a Inventory Menu"));
+		return;
+	}
+	InventoryMenu->AddToViewport();
 }
 
 

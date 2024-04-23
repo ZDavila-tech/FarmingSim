@@ -57,6 +57,11 @@ protected:
 
 	class UUI* UIRef;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UInventoryMenu> InventoryClass;
+
+	class UInventoryMenu* InventoryMenu;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -79,5 +84,8 @@ public:
 
 	//Handle Use Item input
 	void UseItem(const FInputActionValue& Value);
+
+	//Handle Inventory Input
+	void OpenInventory(const FInputActionValue& Value);
 
 };
