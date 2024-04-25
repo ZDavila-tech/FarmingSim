@@ -11,8 +11,9 @@
 #include "Materials/Material.h"
 #include "../Tools/BaseSeed.h"
 #include "../Tools/BasePlow.h"
+#include "../Tools/BaseHammer.h"
 #include "../Plants/PlantBase.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "../FarmingSim.h"
 
 // Sets default values
@@ -77,6 +78,10 @@ void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 		{
 			PlowSoil(Tool);
 		}
+		else if (Cast<ABaseHammer>(Tool->GetChildActor()) && !isEmpty && isPlowed)
+		{
+			DestroyPlant(Tool);
+		}
 	}
 }
 
@@ -104,6 +109,7 @@ void APlantableGround::PlantSeeds(UChildActorComponent* _Tool)
 {
 	ABaseSeed* seed = Cast<ABaseSeed>(_Tool->GetChildActor());
 	seed->PlantSeed(seed->PlantClass, PlotLocation);
+	PlantType = seed->PlantClass;
 	isEmpty = false;
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Planted");
 }
@@ -123,7 +129,18 @@ void APlantableGround::WaterPlants(UChildActorComponent* _Tool)
 
 void APlantableGround::DestroyPlant(UChildActorComponent* _Tool)
 {
+	ABaseHammer* Hammer = (Cast<ABaseHammer>(_Tool->GetChildActor()));
+	Hammer->Use();
 	isEmpty = true;
-	isPlowed = false;
+	TArray<AActor*> OutRow;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PlantType, OutRow);
+	for (int i = 0; i < OutRow.Num(); i++)
+	{
+		if (OutRow[i]->GetActorLocation() == PlotLocation.GetLocation())
+		{
+			OutRow[i]->Destroy();
+			return;
+		}
+	}
 }
 

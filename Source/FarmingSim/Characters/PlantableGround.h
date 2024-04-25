@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FTransform PlotLocation;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TSubclassOf<class APlantBase> PlantType;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
