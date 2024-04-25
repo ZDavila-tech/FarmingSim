@@ -15,13 +15,20 @@ class FARMINGSIM_API ABaseSeed : public ABaseTool
 	GENERATED_BODY()
 
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class APlantBase> PlantClass;
+
 protected:
 	
 
 public:
+
+	virtual void BeginPlay() override;
+
 	void Use();
+
+	void PlantSeed(TSubclassOf<class APlantBase> _PlantClass, FTransform _Location);
 	
 	UFUNCTION(BlueprintCallable)
 	TSubclassOf<class APlantBase> GetPlant() const;

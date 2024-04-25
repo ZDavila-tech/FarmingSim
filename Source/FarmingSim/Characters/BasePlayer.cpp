@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Animations/PlayerAnimInstance.h"
 #include "../Utility/FarmingSimHUD.h"
 #include "../Components/HealthComponent.h"
 #include "../Utility/PlayerInputConfigData.h"
@@ -56,6 +57,8 @@ void ABasePlayer::BeginPlay()
 		Subsystem->AddMappingContext(InputMapping, 0);
 	}
 	
+	PlayerAnimation = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+
 	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
 }
 
@@ -74,7 +77,7 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Completed, this, &ABasePlayer::StopJump);
 	PEI->BindAction(InputActions->InputPauseMenu, ETriggerEvent::Completed, this, &ABasePlayer::OpenPause);
 	PEI->BindAction(InputActions->InputUseItem, ETriggerEvent::Completed, this, &ABasePlayer::UseItem);
-	PEI->BindAction(InputActions->InputInteract, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::InteractEvent);
+	PEI->BindAction(InputActions->InputInteract, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::PickUp);
 	PEI->BindAction(InputActions->InputInventory, ETriggerEvent::Completed, this, &ABasePlayer::OpenInventory);
 }
 
@@ -140,13 +143,7 @@ void ABasePlayer::OpenPause(const FInputActionValue& Value)
 
 void ABasePlayer::UseItem(const FInputActionValue& Value)
 {
-	FPlayerSave player;
-	player.ControlRotation = GetControlRotation();
-	player.Health = HealthComponent->GetCurrentHealth();
-	player.PlayerName = FName("Zolee");
-	player.PlayerTransform = GetActorTransform();
-	GameInstance->SavePlayerData(player);
-	UE_LOG(Game, Error, TEXT("Saved Game"));
+	InventoryComp->UseItemEvent(InventoryComp->CurrentIndexEquipped);
 }
 
 void ABasePlayer::OpenInventory(const FInputActionValue& Value)
@@ -158,6 +155,11 @@ void ABasePlayer::OpenInventory(const FInputActionValue& Value)
 		return;
 	}
 	InventoryMenu->AddToViewport();
+}
+
+UPlayerAnimInstance* ABasePlayer::GetPlayerAnim()
+{
+	return PlayerAnimation;
 }
 
 

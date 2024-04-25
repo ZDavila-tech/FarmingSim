@@ -14,7 +14,9 @@ class FARMINGSIM_API UPlayerAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 public:
-
+	//Farming Animations. Public so other scripts can choose which action they want to do.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation Sequences")
+	UAnimSequence* PlantingAnimation;
 protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -23,29 +25,47 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCharacterMovementComponent* MovementComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	APlayerController* PlayerController;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	APawn* PlayerPawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bool Variables")
 	bool isDead;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bool Variables")
 	bool ShouldMove;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bool Variables")
 	bool isTired;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bool Variables")
 	bool isFalling;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bool Variables")
+	bool isBusy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Float Variables")
 	float Speed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Float Variables")
 	float Direction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Velocity;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FTimerHandle Timer;
+
+	
 
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaTimeX) override;
+
+	//Farming Actions
+	void SetBusy(float _AnimationTime);
+	void SetNotBusy();
+	void HandleFarmActions(UAnimSequence* _Animation);
 };

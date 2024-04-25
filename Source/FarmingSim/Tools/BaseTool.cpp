@@ -2,6 +2,9 @@
 
 
 #include "BaseTool.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Characters/BasePlayer.h"
+#include "../Animations/PlayerAnimInstance.h"
 
 // Sets default values
 ABaseTool::ABaseTool()
@@ -15,7 +18,7 @@ ABaseTool::ABaseTool()
 void ABaseTool::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Player = Cast<ABasePlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 }
 
 // Called every frame

@@ -12,6 +12,7 @@
 #include "../Utility/FSlotStruct.h"
 #include "../FarmingSim.h"
 #include "../Characters/BasePlayer.h"
+#include "../Tools/BaseTool.h"
 #include "../Characters/PlantableGround.h"
 
 // Sets default values for this component's properties
@@ -43,13 +44,14 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// ...
 }
 
-void UInventoryComponent::InteractEvent(const FInputActionValue& Value)
+void UInventoryComponent::PickUp(const FInputActionValue& Value)
 {
 	if (LookAtActor)
 	{
 		Interact(LookAtActor);
 	}
 }
+
 
 void UInventoryComponent::DropItem(FName ItemID, int Quantity)
 {
@@ -373,6 +375,12 @@ void UInventoryComponent::UnequipWeapon(int Index)
 
 void UInventoryComponent::UseItem(int Index)
 {
+	FItemStruct OutRow = GetItemData(Content[Index].ItemID);
+	if (Cast<ABaseTool>(OutRow.ItemClass))
+	{
+		ABaseTool* Tool = Cast<ABaseTool>(OutRow.ItemClass);
+		Tool->Use();
+	}
 }
 
 void UInventoryComponent::SaveInventory()

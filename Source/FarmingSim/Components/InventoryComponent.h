@@ -47,13 +47,13 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	int InventorySize;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<struct FSlotStruct> Content;
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	//Handle Interact Input
-	void InteractEvent(const FInputActionValue& Value);
+	//Handle Interact for PickUp Input
+	void PickUp(const FInputActionValue& Value);
 
 	//Implementable events
 	UFUNCTION(BlueprintCallable)

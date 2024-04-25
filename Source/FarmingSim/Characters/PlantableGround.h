@@ -63,16 +63,16 @@ public:
 	void WalkedAway() override;
 
 	//Farming Interface
-	void LookAtPlot(class ABasePlayer PlayerCharacter) override;
+	void LookAtPlot(class ABasePlayer* PlayerCharacter) override;
 	//Plant trees in area
-	void PlantTrees(class ABasePlayer PlayerCharacter) override;
+	void PlantTrees(UChildActorComponent* _Tool) override;
 	//Plant plants in area
-	void PlantSeeds(class ABaseSeed* _Seed) override;
+	void PlantSeeds(UChildActorComponent* _Tool) override;
 	//Plow soil before planting
-	void PlowSoil(class ABasePlayer PlayerCharacter) override;
+	void PlowSoil(UChildActorComponent* _Tool) override;
 	//Water plants
-	void WaterPlants(class ABasePlayer PlayerCharacter) override;
+	void WaterPlants(UChildActorComponent* To_Toolol) override;
 	//Remove plants from plowed area
-	void DestroyPlant(class ABasePlayer PlayerCharacter) override;
+	void DestroyPlant(UChildActorComponent* _Tool) override;
 
 };

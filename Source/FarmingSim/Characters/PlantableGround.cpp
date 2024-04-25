@@ -11,6 +11,7 @@
 #include "Materials/Material.h"
 #include "../Tools/BaseSeed.h"
 #include "../Plants/PlantBase.h"
+
 #include "../FarmingSim.h"
 
 // Sets default values
@@ -66,10 +67,9 @@ void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 	UChildActorComponent* Tool = PlayerCharacter->GetComponentByClass<UChildActorComponent>();
 	if (Tool)
 	{
-		ABaseSeed* seed = Cast<ABaseSeed>(Tool->GetChildActor());
-		if (seed && isEmpty)
+		if (Cast<ABaseSeed>(Tool->GetChildActor()) && isEmpty)
 		{
-			PlantSeeds(seed);
+			PlantSeeds(Tool);
 		}
 		
 	}
@@ -86,33 +86,32 @@ void APlantableGround::WalkedAway()
 	Widget->SetVisibility(false);
 }
 
-void APlantableGround::LookAtPlot(ABasePlayer PlayerCharacter)
+void APlantableGround::LookAtPlot(ABasePlayer* PlayerCharacter)
 {
 	Widget->SetVisibility(true);
 }
 
-void APlantableGround::PlantTrees(class ABasePlayer PlayerCharacter)
+void APlantableGround::PlantTrees(UChildActorComponent* _Tool)
 {
 }
 
-void APlantableGround::PlantSeeds(class ABaseSeed* _Seed)
+void APlantableGround::PlantSeeds(UChildActorComponent* _Tool)
 {
-	FActorSpawnParameters SpawnInfo;
-	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	GetWorld()->SpawnActor<APlantBase>(_Seed->PlantClass, PlotLocation, SpawnInfo);
+	ABaseSeed* seed = Cast<ABaseSeed>(_Tool->GetChildActor());
+	seed->PlantSeed(seed->PlantClass, PlotLocation);
 	isEmpty = false;
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Planted");
 }
 
-void APlantableGround::PlowSoil(class ABasePlayer PlayerCharacter)
+void APlantableGround::PlowSoil(UChildActorComponent* _Tool)
 {
 }
 
-void APlantableGround::WaterPlants(class ABasePlayer PlayerCharacter)
+void APlantableGround::WaterPlants(UChildActorComponent* _Tool)
 {
 }
 
-void APlantableGround::DestroyPlant(class ABasePlayer PlayerCharacter)
+void APlantableGround::DestroyPlant(UChildActorComponent* _Tool)
 {
 }
 

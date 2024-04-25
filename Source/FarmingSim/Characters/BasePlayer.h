@@ -36,6 +36,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UPlayerAnimInstance* PlayerAnimation;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class AFarmingSimHUD* HUD;
 
@@ -88,4 +91,6 @@ public:
 	//Handle Inventory Input
 	void OpenInventory(const FInputActionValue& Value);
 
+	//Access Animations
+	UPlayerAnimInstance* GetPlayerAnim();
 };
