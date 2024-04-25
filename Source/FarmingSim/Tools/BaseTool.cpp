@@ -19,6 +19,10 @@ void ABaseTool::BeginPlay()
 {
 	Super::BeginPlay();
 	Player = Cast<ABasePlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+
+	//NOTE:: Want to move this into Item when Inventory is connected to implementation
+	StaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
 }
 
 // Called every frame
@@ -31,5 +35,6 @@ void ABaseTool::Tick(float DeltaTime)
 void ABaseTool::Use()
 {
 	Super::Use();
+	UGameplayStatics::ApplyDamage(Player, BaseDamage, GetInstigatorController(), this, DamageTypeClass);
 }
 

@@ -22,6 +22,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class ABasePlayer* Player;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UDamageType> DamageTypeClass;
+
 
 public:	
 	// Called every frame

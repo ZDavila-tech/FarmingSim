@@ -17,6 +17,15 @@ public:
 	//Farming Animations. Public so other scripts can choose which action they want to do.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation Sequences")
 	UAnimSequence* PlantingAnimation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation Sequences")
+	UAnimSequence* PlowingAnimation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation Sequences")
+	UAnimSequence* ChoppingAnimation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation Sequences")
+	UAnimSequence* SmashingAnimation;
 protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

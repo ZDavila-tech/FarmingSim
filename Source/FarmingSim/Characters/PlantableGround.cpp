@@ -10,6 +10,7 @@
 #include "Components/BoxComponent.h"
 #include "Materials/Material.h"
 #include "../Tools/BaseSeed.h"
+#include "../Tools/BasePlow.h"
 #include "../Plants/PlantBase.h"
 
 #include "../FarmingSim.h"
@@ -52,6 +53,7 @@ void APlantableGround::BeginPlay()
 	StaticMesh->SetMaterial(0, GrassMaterial);
 	PlotLocation = GetActorTransform();
 	isEmpty = true;
+	isPlowed = false;
 
 }
 
@@ -67,11 +69,14 @@ void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 	UChildActorComponent* Tool = PlayerCharacter->GetComponentByClass<UChildActorComponent>();
 	if (Tool)
 	{
-		if (Cast<ABaseSeed>(Tool->GetChildActor()) && isEmpty)
+		if (Cast<ABaseSeed>(Tool->GetChildActor()) && isEmpty && isPlowed)
 		{
 			PlantSeeds(Tool);
 		}
-		
+		else if (Cast<ABasePlow>(Tool->GetChildActor()) && isEmpty)
+		{
+			PlowSoil(Tool);
+		}
 	}
 }
 
@@ -105,13 +110,20 @@ void APlantableGround::PlantSeeds(UChildActorComponent* _Tool)
 
 void APlantableGround::PlowSoil(UChildActorComponent* _Tool)
 {
+	ABasePlow* Plow = Cast<ABasePlow>(_Tool->GetChildActor());
+	Plow->Use();
+	StaticMesh->SetMaterial(0, DirtMaterial);
+	isPlowed = true;
 }
 
 void APlantableGround::WaterPlants(UChildActorComponent* _Tool)
 {
+	isWatered = true;
 }
 
 void APlantableGround::DestroyPlant(UChildActorComponent* _Tool)
 {
+	isEmpty = true;
+	isPlowed = false;
 }
 
