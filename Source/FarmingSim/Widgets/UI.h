@@ -28,6 +28,19 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* TXT_Money;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWrapBox* BOX_EquipmentGrid;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UInventoryComponent* InventoryComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<class UInventorySlot> SlotMenu;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UInventorySlot* InventorySlot;
+
+
 public:
 
 	UUI(const FObjectInitializer& ObjectInitializer);
@@ -42,5 +55,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetDate(int _Month, int _Date, int _Year);
+
+	UFUNCTION(BlueprintCallable)
+	void DisplayEquipSlots(class UInventoryComponent* _InventoryComponent);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateEquipSlots();
 
 };

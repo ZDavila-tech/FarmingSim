@@ -20,7 +20,7 @@ UInventoryComponent::UInventoryComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 	InteractRange = 100.0f;
 	// ...
 }
@@ -40,15 +40,24 @@ void UInventoryComponent::BeginPlay()
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	InteractionTrace();
 	// ...
 }
 
 void UInventoryComponent::PickUp(const FInputActionValue& Value)
 {
-	if (LookAtActor)
+	if (CanInteract)
 	{
-		Interact(LookAtActor);
+		if (LookAtActor)
+		{
+			//Interact(LookAtActor);
+			UItemComponent* Comp = LookAtActor->GetComponentByClass<class UItemComponent>();
+			if (IsValid(Comp))
+			{
+				Comp->HandleInteract(Cast<ABasePlayer>(GetOwner()));
+				return;
+			}
+		}
+		Update();
 	}
 }
 
@@ -72,30 +81,6 @@ void UInventoryComponent::Update()
 
 }
 
-void UInventoryComponent::UseItemEvent(int Index)
-{
-	UseItem(Index);
-	Update();
-}
-
-void UInventoryComponent::Interact(AActor* TargetActor)
-{
-	UItemComponent* Comp = TargetActor->GetComponentByClass<class UItemComponent>();
-	if (IsValid(Comp))
-	{
-		Comp->HandleInteract(Cast<ABasePlayer>(GetOwner()));
-		return;
-	}
-	APlantableGround* Ground = Cast<APlantableGround>(TargetActor);
-	if (Ground)
-	{
-		Ground->HandleInteract(Cast<ABasePlayer>(GetOwner()));
-		return;
-	}
-	
-
-}
-
 void UInventoryComponent::EquipEvent(int Index)
 {
 	//Add Dispatch
@@ -103,53 +88,6 @@ void UInventoryComponent::EquipEvent(int Index)
 	Update();
 }
 
-void UInventoryComponent::InteractionTrace()
-{
-	FHitResult HitActor;
-	float Radius = 15.0f;
-	FVector Start = FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y, 15.0f) 
-		+ FVector(GetOwner()->GetActorForwardVector().X, GetOwner()->GetActorForwardVector().Y, 0.0f) * InteractRange;
-	FVector End = Start;
-	ECollisionChannel Channel = ECC_GameTraceChannel1;
-	FCollisionQueryParams Params;
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
-	Params.AddIgnoredActor(GetOwner());
-
-	if (GetWorld()->SweepSingleByChannel(HitActor, End, Start, FQuat::Identity, Channel, Sphere, Params))
-	{
-		DrawDebugSphere(GetWorld(),Start,Radius, 10, FColor::Green);
-		if (HitActor.GetActor() != LookAtActor)
-		{
-			LookAtActor = HitActor.GetActor();
-			InteractInterface = Cast<IInteractInterface>(LookAtActor);
-			if (InteractInterface)
-			{
-				InteractInterface->LookAt();
-			}
-		}
-		else
-		{
-			if(InteractInterface)	
-			{
-				InteractInterface->WalkedAway();
-			}
-			LookAtActor = HitActor.GetActor();
-			InteractInterface = Cast<IInteractInterface>(LookAtActor);
-			if (InteractInterface)
-			{
-				InteractInterface->LookAt();
-			}
-		}
-	}
-	else
-	{
-		DrawDebugSphere(GetWorld(), Start, Radius, 10, FColor::Red);
-		if (InteractInterface)
-		{
-			InteractInterface->WalkedAway();
-		}
-	}
-}
 
 void UInventoryComponent::FindSlot(FName ItemID, int& Index, bool& isSlotFound)
 {
@@ -373,14 +311,24 @@ void UInventoryComponent::UnequipWeapon(int Index)
 {
 }
 
-void UInventoryComponent::UseItem(int Index)
+void UInventoryComponent::UseItem(const FInputActionValue& Value)
 {
-	FItemStruct OutRow = GetItemData(Content[Index].ItemID);
-	if (Cast<ABaseTool>(OutRow.ItemClass))
+	FItemStruct OutRow = GetItemData(Content[CurrentIndexEquipped].ItemID);
+	TSubclassOf<ABaseTool> ToolClass = TSubclassOf<ABaseTool>(OutRow.ItemClass);
+	if (ToolClass)
 	{
-		ABaseTool* Tool = Cast<ABaseTool>(OutRow.ItemClass);
-		Tool->Use();
+		APlantableGround* Ground = Cast<APlantableGround>(LookAtActor);
+		if (Ground)
+		{
+			Ground->HandleInteract(Cast<ABasePlayer>(GetOwner()));
+			return;
+		}
+		else
+		{
+			//Tool->Use();
+		}
 	}
+	Update();
 }
 
 void UInventoryComponent::SaveInventory()

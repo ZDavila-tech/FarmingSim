@@ -4,6 +4,11 @@
 #include "UI.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
+#include "Components/WrapBox.h"
+#include "../Components/InventoryComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "InventorySlot.h"
+#include "../Utility/FSlotStruct.h"
 #include "../FarmingSim.h"
 
 UUI::UUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -12,7 +17,7 @@ UUI::UUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 	{
 		UE_LOG(Game, Warning, TEXT("No Valid Bar"));
 	}
-	if (TXT_Date)
+	if (TXT_Date == nullptr)
 	{
 		UE_LOG(Game, Warning, TEXT("No Valid Text"));
 	}
@@ -20,6 +25,22 @@ UUI::UUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 
 void UUI::NativeConstruct()
 {
+	if (InventoryComponent)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			InventorySlot = CreateWidget<UInventorySlot>(UGameplayStatics::GetPlayerController(GetWorld(), 0), SlotMenu);
+			InventorySlot->ContentIndex = i;
+			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
+			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
+			InventorySlot->InventoryComponent = InventoryComponent;
+			BOX_EquipmentGrid->AddChildToWrapBox(InventorySlot);
+			//If equipped
+		}
+		InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UUI::UpdateEquipSlots);
+	}
+
+	DisplayEquipSlots(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetComponentByClass<UInventoryComponent>());
 }
 
 void UUI::SetHealth(float PercentHealth)
@@ -67,4 +88,46 @@ void UUI::SetDate(int _Month, int _Date, int _Year)
 	FString Date = FString::Printf(TEXT("Month %d Day %d Year %d"), _Month, _Date, _Year);
 	TXT_Date->SetText(FText::FromString(Date));
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, Date);
+}
+
+void UUI::DisplayEquipSlots(UInventoryComponent* _InventoryComponent)
+{
+	InventoryComponent = _InventoryComponent;
+	BOX_EquipmentGrid->ClearChildren();
+	if (InventoryComponent)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			InventorySlot = CreateWidget<UInventorySlot>(UGameplayStatics::GetPlayerController(GetWorld(), 0), SlotMenu);
+			InventorySlot->ContentIndex = i;
+			if (InventoryComponent->Content.Num() >= i)
+			{
+				InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
+				InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
+			}
+			InventorySlot->InventoryComponent = InventoryComponent;
+			BOX_EquipmentGrid->AddChildToWrapBox(InventorySlot);
+			//If equipped
+		}
+		InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UUI::UpdateEquipSlots);
+	}
+}
+
+void UUI::UpdateEquipSlots()
+{
+	BOX_EquipmentGrid->ClearChildren();
+	if (InventoryComponent)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			InventorySlot = CreateWidget<UInventorySlot>(UGameplayStatics::GetPlayerController(GetWorld(), 0), SlotMenu);
+			InventorySlot->ContentIndex = i;
+			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
+			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
+			InventorySlot->InventoryComponent = InventoryComponent;
+			BOX_EquipmentGrid->AddChildToWrapBox(InventorySlot);
+			//If equipped
+		}
+		InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UUI::UpdateEquipSlots);
+	}
 }

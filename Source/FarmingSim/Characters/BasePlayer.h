@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	class UInventoryComponent* InventoryComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBoxComponent* BoxDetector;
+
 	//Game Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PlayerController;
@@ -85,12 +88,20 @@ public:
 	//Hande player pause input
 	void OpenPause(const FInputActionValue& Value);
 
-	//Handle Use Item input
-	void UseItem(const FInputActionValue& Value);
+	////Handle Use Item input
+	//void UseItem(const FInputActionValue& Value);
 
 	//Handle Inventory Input
 	void OpenInventory(const FInputActionValue& Value);
 
 	//Access Animations
 	UPlayerAnimInstance* GetPlayerAnim();
+
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex);
 };

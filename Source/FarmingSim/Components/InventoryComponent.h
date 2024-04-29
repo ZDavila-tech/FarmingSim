@@ -24,15 +24,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int CurrentIndexEquipped;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool CanInteract;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AActor* LookAtActor;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int InteractRange;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class AActor* LookAtActor;
 
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ItemDataTable;
@@ -55,6 +58,8 @@ public:
 	//Handle Interact for PickUp Input
 	void PickUp(const FInputActionValue& Value);
 
+	void UseItem(const FInputActionValue& Value);
+	
 	//Implementable events
 	UFUNCTION(BlueprintCallable)
 	void DropItem(FName ItemID, int Quantity);
@@ -63,17 +68,7 @@ public:
 	void Update();
 
 	UFUNCTION(BlueprintCallable)
-	void UseItemEvent(int Index);
-
-	UFUNCTION(BlueprintCallable)
-	void Interact(AActor* TargetActor);
-
-	UFUNCTION(BlueprintCallable)
 	void EquipEvent(int Index);
-
-	//Functions
-	UFUNCTION(BlueprintCallable)
-	void InteractionTrace();
 
 	UFUNCTION(BlueprintCallable)
 	void FindSlot(FName ItemID, int& Index, bool& isSlotFound);
@@ -90,7 +85,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CreateStack(FName ItemID, int Quantity);
 
-	UFUNCTION(BlueprintCallable)	//Needs to be edited when FSlotStruct created
+	UFUNCTION(BlueprintCallable)
 	FItemStruct GetItemData(FName ItemID) const;
 
 	UFUNCTION(BlueprintCallable)
@@ -111,8 +106,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UnequipWeapon(int Index);
 
-	UFUNCTION(BlueprintCallable)
-	void UseItem(int Index);
 
 	UFUNCTION(BlueprintCallable)
 	void SaveInventory();

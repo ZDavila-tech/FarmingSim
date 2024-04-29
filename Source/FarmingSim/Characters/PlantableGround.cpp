@@ -74,7 +74,7 @@ void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 		{
 			PlantSeeds(Tool);
 		}
-		else if (Cast<ABasePlow>(Tool->GetChildActor()) && isEmpty)
+		else if (Cast<ABasePlow>(Tool->GetChildActor()) && isEmpty && !isPlowed)
 		{
 			PlowSoil(Tool);
 		}

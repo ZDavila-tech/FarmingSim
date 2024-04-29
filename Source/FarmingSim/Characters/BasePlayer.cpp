@@ -5,6 +5,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFrameWork/SpringArmComponent.h"
 #include "../Components/InventoryComponent.h"
+#include "../Components/ItemComponent.h"
+#include "Components/BoxComponent.h"
 #include "Camera/CameraComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
@@ -15,9 +17,11 @@
 #include "../Utility/FarmingSimHUD.h"
 #include "../Components/HealthComponent.h"
 #include "../Utility/PlayerInputConfigData.h"
+#include "../Interfaces/InteractInterface.h"
 #include "../Widgets/PauseMenu.h"
 #include "../Widgets/InventoryMenu.h"
 #include "../Widgets/UI.h"
+#include "../Utility/FSlotStruct.h"
 #include "../FarmingSimGameInstance.h"
 #include "../FarmingSim.h"
 
@@ -33,6 +37,9 @@ ABasePlayer::ABasePlayer()
 	CameraComp->SetupAttachment(SpringArmComp);
 
 	InventoryComp = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory Comp"));
+
+	BoxDetector = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
+	BoxDetector->SetupAttachment(RootComponent);
 }
 
 void ABasePlayer::BeginPlay()
@@ -60,6 +67,10 @@ void ABasePlayer::BeginPlay()
 	PlayerAnimation = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 
 	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
+	BoxDetector->OnComponentBeginOverlap.AddDynamic(this, &ABasePlayer::OnBeginOverlap);
+	BoxDetector->OnComponentEndOverlap.AddDynamic(this, &ABasePlayer::OnEndOverlap);
+	InventoryComp->Content.Insert(FSlotStruct("BasePlow", 1, false),0);
+
 }
 
 void ABasePlayer::Tick(float DeltaTime)
@@ -76,7 +87,7 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Started, this, &ABasePlayer::Jump);
 	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Completed, this, &ABasePlayer::StopJump);
 	PEI->BindAction(InputActions->InputPauseMenu, ETriggerEvent::Completed, this, &ABasePlayer::OpenPause);
-	PEI->BindAction(InputActions->InputUseItem, ETriggerEvent::Completed, this, &ABasePlayer::UseItem);
+	PEI->BindAction(InputActions->InputUseItem, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::UseItem);
 	PEI->BindAction(InputActions->InputInteract, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::PickUp);
 	PEI->BindAction(InputActions->InputInventory, ETriggerEvent::Completed, this, &ABasePlayer::OpenInventory);
 }
@@ -141,11 +152,6 @@ void ABasePlayer::OpenPause(const FInputActionValue& Value)
 	PauseMenu->AddToViewport();
 }
 
-void ABasePlayer::UseItem(const FInputActionValue& Value)
-{
-	InventoryComp->UseItemEvent(InventoryComp->CurrentIndexEquipped);
-}
-
 void ABasePlayer::OpenInventory(const FInputActionValue& Value)
 {
 	InventoryMenu = CreateWidget<UInventoryMenu>(PlayerController, InventoryClass);
@@ -160,6 +166,40 @@ void ABasePlayer::OpenInventory(const FInputActionValue& Value)
 UPlayerAnimInstance* ABasePlayer::GetPlayerAnim()
 {
 	return PlayerAnimation;
+}
+
+void ABasePlayer::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
+	{
+		Cast<IInteractInterface>(OtherActor)->LookAt();
+		InventoryComp->CanInteract = true;
+		InventoryComp->LookAtActor = OtherActor;
+	}
+	else if (OtherActor->GetComponentByClass<UItemComponent>())
+	{
+		Cast<IInteractInterface>(OtherActor->GetComponentByClass<UItemComponent>())->LookAt();
+		InventoryComp->CanInteract = true;
+		InventoryComp->LookAtActor = OtherActor;
+	}
+}
+
+void ABasePlayer::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
+	if (OtherActor->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
+	{
+		Cast<IInteractInterface>(OtherActor)->WalkedAway();
+		InventoryComp->CanInteract = false;
+		InventoryComp->LookAtActor = nullptr;
+	}
+	else if (OtherActor->GetComponentByClass<UItemComponent>())
+	{
+		Cast<IInteractInterface>(OtherActor->GetComponentByClass<UItemComponent>())->WalkedAway();
+		InventoryComp->CanInteract = false;
+		InventoryComp->LookAtActor = nullptr;
+	}
+
 }
 
 
