@@ -22,8 +22,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USkeletalMeshComponent* SkeletalMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UChildActorComponent* WeaponChildActorComp;
+	
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UHealthComponent* HealthComponent;
@@ -32,6 +31,9 @@ protected:
 	FName SocketName;
 
 public:	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UChildActorComponent* WeaponChildActorComp;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

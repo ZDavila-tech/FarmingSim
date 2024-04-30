@@ -9,6 +9,7 @@
 #include "BasePlayer.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipUpdate, int, _EquipIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrencyUpdate, int, _Currency);
 
 UCLASS(Blueprintable, BlueprintType)
 class FARMINGSIM_API ABasePlayer : public ACommonCharacter
@@ -63,12 +64,18 @@ protected:
 	class UUI* UIRef;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Currency;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UInventoryMenu> InventoryClass;
 
 	class UInventoryMenu* InventoryMenu;
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
-	FOnEquipUpdate* OnEquipUpdate;
+	FOnEquipUpdate OnEquipUpdate;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
+	FOnCurrencyUpdate OnCurrencyUpdate;
 
 public:
 	// Called every frame
@@ -90,11 +97,23 @@ public:
 	//Hande player pause input
 	void OpenPause(const FInputActionValue& Value);
 
-	////Handle Use Item input
-	//void UseItem(const FInputActionValue& Value);
+	//Handle Use Item input
+	void Scroll(const FInputActionValue& Value);
 
 	//Handle Inventory Input
 	void OpenInventory(const FInputActionValue& Value);
+
+	//Handle Switching slots in the inventory
+	void EquipSlot1(const FInputActionValue& Value);
+	void EquipSlot2(const FInputActionValue& Value);
+	void EquipSlot3(const FInputActionValue& Value);
+	void EquipSlot4(const FInputActionValue& Value);
+	void EquipSlot5(const FInputActionValue& Value);
+	void EquipSlot6(const FInputActionValue& Value);
+	void EquipSlot7(const FInputActionValue& Value);
+	void EquipSlot8(const FInputActionValue& Value);
+	void EquipSlot9(const FInputActionValue& Value);
+	void EquipSlot10(const FInputActionValue& Value);
 
 	//Access Animations
 	UPlayerAnimInstance* GetPlayerAnim();
@@ -107,5 +126,4 @@ public:
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
-	FOnEquipUpdate* GetEquipDelegate();
 };

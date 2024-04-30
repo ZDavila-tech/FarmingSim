@@ -41,3 +41,8 @@ void AItemBase::Use()
 {
 }
 
+void AItemBase::Equip()
+{
+	StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+

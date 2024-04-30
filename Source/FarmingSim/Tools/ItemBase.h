@@ -37,4 +37,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Use();
+
+	void Equip();
 };

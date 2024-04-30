@@ -57,6 +57,9 @@ public:
 	void SetDate(int _Month, int _Date, int _Year);
 
 	UFUNCTION(BlueprintCallable)
+	void SetMoney(int _Currency);
+
+	UFUNCTION(BlueprintCallable)
 	void DisplayEquipSlots(class UInventoryComponent* _InventoryComponent);
 
 	UFUNCTION(BlueprintCallable)

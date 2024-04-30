@@ -74,6 +74,11 @@ void UUI::SetDate(int _Month, int _Date, int _Year)
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, Date);
 }
 
+void UUI::SetMoney(int _Currency)
+{
+	TXT_Money->SetText(FText::FromString(FString::Printf(TEXT("$ %d"), _Currency)));
+}
+
 void UUI::DisplayEquipSlots(UInventoryComponent* _InventoryComponent)
 {
 	InventoryComponent = _InventoryComponent;

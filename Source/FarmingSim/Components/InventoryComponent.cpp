@@ -49,7 +49,6 @@ void UInventoryComponent::PickUp(const FInputActionValue& Value)
 	{
 		if (LookAtActor)
 		{
-			//Interact(LookAtActor);
 			UItemComponent* Comp = LookAtActor->GetComponentByClass<class UItemComponent>();
 			if (IsValid(Comp))
 			{
@@ -80,14 +79,6 @@ void UInventoryComponent::Update()
 	}
 
 }
-
-void UInventoryComponent::EquipEvent(int Index)
-{
-	//Add Dispatch
-	EquipWeapon(Index);
-	Update();
-}
-
 
 void UInventoryComponent::FindSlot(FName ItemID, int& Index, bool& isSlotFound)
 {
@@ -310,8 +301,17 @@ void UInventoryComponent::EquipWeapon(int Index)
 		UnequipWeapon(i);
 	}
 	Content[Index].Equipped = true;
-	FItemStruct OutRow = GetItemData(Content[Index].ItemID);
-	Cast<ABasePlayer>(GetOwner())->GetComponentByClass<UChildActorComponent>()->SetChildActorClass(OutRow.ItemClass);
+	if (Content[Index].ItemID == "")
+	{
+		Cast<ABasePlayer>(GetOwner())->WeaponChildActorComp->SetChildActorClass(NULL);
+	}
+	else
+	{
+		FItemStruct OutRow = GetItemData(Content[Index].ItemID);
+		Cast<ABasePlayer>(GetOwner())->WeaponChildActorComp->SetChildActorClass(OutRow.ItemClass);
+		Cast<AItemBase>(Cast<ABasePlayer>(GetOwner())->WeaponChildActorComp->GetChildActor())->Equip();
+	}
+	Update();
 }
 
 void UInventoryComponent::UnequipWeapon(int Index)

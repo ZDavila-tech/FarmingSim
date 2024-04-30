@@ -68,9 +68,6 @@ public:
 	void Update();
 
 	UFUNCTION(BlueprintCallable)
-	void EquipEvent(int Index);
-
-	UFUNCTION(BlueprintCallable)
 	void FindSlot(FName ItemID, int& Index, bool& isSlotFound);
 
 	UFUNCTION(BlueprintCallable)

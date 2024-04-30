@@ -69,9 +69,13 @@ void ABasePlayer::BeginPlay()
 	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
 	BoxDetector->OnComponentBeginOverlap.AddDynamic(this, &ABasePlayer::OnBeginOverlap);
 	BoxDetector->OnComponentEndOverlap.AddDynamic(this, &ABasePlayer::OnEndOverlap);
-	
+	OnEquipUpdate.AddDynamic(InventoryComp, &UInventoryComponent::EquipWeapon);
+	OnCurrencyUpdate.AddDynamic(UIRef, &UUI::SetMoney);
+	InventoryComp->InventorySize = 16;
 	InventoryComp->Content.Insert(FSlotStruct("BasePlow", 1, false),0);
+	InventoryComp->Content.Insert(FSlotStruct("BaseHammer", 1, false), 1);
 	UIRef->DisplayEquipSlots(InventoryComp);
+	OnCurrencyUpdate.Broadcast(Currency);
 
 }
 
@@ -92,6 +96,17 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PEI->BindAction(InputActions->InputUseItem, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::UseItem);
 	PEI->BindAction(InputActions->InputInteract, ETriggerEvent::Completed, InventoryComp, &UInventoryComponent::PickUp);
 	PEI->BindAction(InputActions->InputInventory, ETriggerEvent::Completed, this, &ABasePlayer::OpenInventory);
+	PEI->BindAction(InputActions->InputScrollWheel, ETriggerEvent::Triggered, this, &ABasePlayer::Scroll);
+	PEI->BindAction(InputActions->InputEquip1, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot1);
+	PEI->BindAction(InputActions->InputEquip2, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot2);
+	PEI->BindAction(InputActions->InputEquip3, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot3);
+	PEI->BindAction(InputActions->InputEquip4, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot4);
+	PEI->BindAction(InputActions->InputEquip5, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot5);
+	PEI->BindAction(InputActions->InputEquip6, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot6);
+	PEI->BindAction(InputActions->InputEquip7, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot7);
+	PEI->BindAction(InputActions->InputEquip8, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot8);
+	PEI->BindAction(InputActions->InputEquip9, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot9);
+	PEI->BindAction(InputActions->InputEquip10, ETriggerEvent::Completed, this, &ABasePlayer::EquipSlot10);
 }
 
 void ABasePlayer::Move(const FInputActionValue& Value)
@@ -154,6 +169,30 @@ void ABasePlayer::OpenPause(const FInputActionValue& Value)
 	PauseMenu->AddToViewport();
 }
 
+void ABasePlayer::Scroll(const FInputActionValue& Value)
+{
+	
+	float index = Value.GetMagnitude();
+	if (index > 0)
+	{
+		InventoryComp->CurrentIndexEquipped++;
+		if (InventoryComp->CurrentIndexEquipped > 9)
+		{
+			InventoryComp->CurrentIndexEquipped = 0;
+		}
+		OnEquipUpdate.Broadcast(InventoryComp->CurrentIndexEquipped);
+	}
+	else
+	{
+		InventoryComp->CurrentIndexEquipped--;
+		if (InventoryComp->CurrentIndexEquipped < 0)
+		{
+			InventoryComp->CurrentIndexEquipped = 9;
+		}
+		OnEquipUpdate.Broadcast(InventoryComp->CurrentIndexEquipped);
+	}
+}
+
 void ABasePlayer::OpenInventory(const FInputActionValue& Value)
 {
 	InventoryMenu = CreateWidget<UInventoryMenu>(PlayerController, InventoryClass);
@@ -163,6 +202,66 @@ void ABasePlayer::OpenInventory(const FInputActionValue& Value)
 		return;
 	}
 	InventoryMenu->AddToViewport();
+}
+
+void ABasePlayer::EquipSlot1(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 0;
+	OnEquipUpdate.Broadcast(0);
+}
+
+void ABasePlayer::EquipSlot2(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 1;
+	OnEquipUpdate.Broadcast(1);
+}
+
+void ABasePlayer::EquipSlot3(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 2;
+	OnEquipUpdate.Broadcast(2);
+}
+
+void ABasePlayer::EquipSlot4(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 3;
+	OnEquipUpdate.Broadcast(3);
+}
+
+void ABasePlayer::EquipSlot5(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 4;
+	OnEquipUpdate.Broadcast(4);
+}
+
+void ABasePlayer::EquipSlot6(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 5;
+	OnEquipUpdate.Broadcast(5);
+}
+
+void ABasePlayer::EquipSlot7(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 6;
+	OnEquipUpdate.Broadcast(6);
+}
+
+void ABasePlayer::EquipSlot8(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 7;
+	OnEquipUpdate.Broadcast(7);
+}
+
+void ABasePlayer::EquipSlot9(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 8;
+	OnEquipUpdate.Broadcast(8);
+}
+
+void ABasePlayer::EquipSlot10(const FInputActionValue& Value)
+{
+	InventoryComp->CurrentIndexEquipped = 9;
+	OnEquipUpdate.Broadcast(9);
 }
 
 UPlayerAnimInstance* ABasePlayer::GetPlayerAnim()
@@ -203,12 +302,5 @@ void ABasePlayer::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	}
 
 }
-
-FOnEquipUpdate* ABasePlayer::GetEquipDelegate()
-{
-	return &OnEquipUpdate;
-}
-
-
 
 
