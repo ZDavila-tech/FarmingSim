@@ -7,6 +7,8 @@
 #include "EnhancedInputComponent.h"
 #include "ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
+#include "../Widgets/ActionSlot.h"
 #include "Engine/DataTable.h"
 #include "../Utility/FItemStruct.h"
 #include "../Utility/FSlotStruct.h"
@@ -31,7 +33,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	Content.SetNum(InventorySize);
-	
+	Player = Cast<ABasePlayer>(GetOwner());
 	Update();
 }
 
@@ -303,13 +305,18 @@ void UInventoryComponent::EquipWeapon(int Index)
 	Content[Index].Equipped = true;
 	if (Content[Index].ItemID == "")
 	{
-		Cast<ABasePlayer>(GetOwner())->WeaponChildActorComp->SetChildActorClass(NULL);
+		Player->WeaponChildActorComp->SetChildActorClass(NULL);
+		Player->Widget->SetVisibility(false);
 	}
 	else
 	{
 		FItemStruct OutRow = GetItemData(Content[Index].ItemID);
-		Cast<ABasePlayer>(GetOwner())->WeaponChildActorComp->SetChildActorClass(OutRow.ItemClass);
-		Cast<AItemBase>(Cast<ABasePlayer>(GetOwner())->WeaponChildActorComp->GetChildActor())->Equip();
+		Player->WeaponChildActorComp->SetChildActorClass(OutRow.ItemClass);
+		AItemBase* Item = Cast<AItemBase>(Player->WeaponChildActorComp->GetChildActor());
+		Item->Equip();
+		Player->Widget->SetVisibility(true);
+		Player->ActionSlot->SetActionText(Item->Actions[0]);
+		Player->ActionSlot->SetMouseImage(false);
 	}
 	Update();
 }
@@ -328,7 +335,7 @@ void UInventoryComponent::UseItem(const FInputActionValue& Value)
 		APlantableGround* Ground = Cast<APlantableGround>(LookAtActor);
 		if (Ground)
 		{
-			Ground->HandleInteract(Cast<ABasePlayer>(GetOwner()));
+			Ground->HandleInteract(Player);
 			return;
 		}
 		else

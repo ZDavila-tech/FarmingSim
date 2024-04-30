@@ -23,6 +23,7 @@ void UItemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	GetOwner()->SetReplicates(true);
+	
 }
 
 
@@ -57,5 +58,6 @@ FText UItemComponent::LookAt()
 
 void UItemComponent::WalkedAway()
 {
+
 }
 

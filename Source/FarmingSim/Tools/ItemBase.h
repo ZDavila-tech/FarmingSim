@@ -14,7 +14,8 @@ class FARMINGSIM_API AItemBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AItemBase();
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FText> Actions;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,6 +29,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UItemComponent* ItemComp;
 
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

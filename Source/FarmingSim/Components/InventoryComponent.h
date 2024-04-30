@@ -44,6 +44,8 @@ protected:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
 	FOnInventoryUpdate OnInventoryUpdate;
+	
+	class ABasePlayer* Player;
 
 public:	
 

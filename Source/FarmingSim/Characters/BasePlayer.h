@@ -19,6 +19,10 @@ class FARMINGSIM_API ABasePlayer : public ACommonCharacter
 public:
 	ABasePlayer();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UWidgetComponent* Widget;
+	class UActionSlot* ActionSlot;
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -60,6 +64,11 @@ protected:
 	TSubclassOf<class UPauseMenu> PauseClass;
 
 	class UPauseMenu* PauseMenu;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UActionSlot> ActionSlotClass;
+
+	
 
 	class UUI* UIRef;
 

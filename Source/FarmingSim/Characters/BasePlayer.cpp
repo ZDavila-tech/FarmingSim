@@ -6,7 +6,9 @@
 #include "GameFrameWork/SpringArmComponent.h"
 #include "../Components/InventoryComponent.h"
 #include "../Components/ItemComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Components/BoxComponent.h"
+#include "../Widgets/ActionSlot.h"
 #include "Camera/CameraComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
@@ -40,11 +42,19 @@ ABasePlayer::ABasePlayer()
 
 	BoxDetector = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
 	BoxDetector->SetupAttachment(RootComponent);
+
+	Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Action Widget"));
+	Widget->SetupAttachment(RootComponent);
+	Widget->SetWidgetSpace(EWidgetSpace::Screen);
+	Widget->SetDrawSize(FVector2D(200, 20));
+	Widget->SetWorldLocation(FVector(0.0f, 0.0f, 130.0f));
+	Widget->SetWorldRotation(FRotator(0.0f, 180.0f, 0.0f));
 }
 
 void ABasePlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
 
 	PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController == nullptr)
@@ -65,6 +75,9 @@ void ABasePlayer::BeginPlay()
 	}
 	
 	PlayerAnimation = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+
+	ActionSlot = CreateWidget<UActionSlot>(PlayerController, ActionSlotClass);
+	Widget->SetWidget(ActionSlot);
 
 	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
 	BoxDetector->OnComponentBeginOverlap.AddDynamic(this, &ABasePlayer::OnBeginOverlap);
@@ -280,6 +293,8 @@ void ABasePlayer::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	else if (OtherActor->GetComponentByClass<UItemComponent>())
 	{
 		Cast<IInteractInterface>(OtherActor->GetComponentByClass<UItemComponent>())->LookAt();
+		Widget->SetVisibility(true);
+		ActionSlot->SetActionText(FText::FromString(("Pick Up")));
 		InventoryComp->CanInteract = true;
 		InventoryComp->LookAtActor = OtherActor;
 	}
@@ -297,6 +312,7 @@ void ABasePlayer::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	else if (OtherActor->GetComponentByClass<UItemComponent>())
 	{
 		Cast<IInteractInterface>(OtherActor->GetComponentByClass<UItemComponent>())->WalkedAway();
+		Widget->SetVisibility(false);
 		InventoryComp->CanInteract = false;
 		InventoryComp->LookAtActor = nullptr;
 	}
