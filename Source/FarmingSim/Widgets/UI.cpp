@@ -25,22 +25,6 @@ UUI::UUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 
 void UUI::NativeConstruct()
 {
-	if (InventoryComponent)
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			InventorySlot = CreateWidget<UInventorySlot>(UGameplayStatics::GetPlayerController(GetWorld(), 0), SlotMenu);
-			InventorySlot->ContentIndex = i;
-			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
-			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
-			InventorySlot->InventoryComponent = InventoryComponent;
-			BOX_EquipmentGrid->AddChildToWrapBox(InventorySlot);
-			//If equipped
-		}
-		InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UUI::UpdateEquipSlots);
-	}
-
-	DisplayEquipSlots(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetComponentByClass<UInventoryComponent>());
 }
 
 void UUI::SetHealth(float PercentHealth)
@@ -100,12 +84,10 @@ void UUI::DisplayEquipSlots(UInventoryComponent* _InventoryComponent)
 		{
 			InventorySlot = CreateWidget<UInventorySlot>(UGameplayStatics::GetPlayerController(GetWorld(), 0), SlotMenu);
 			InventorySlot->ContentIndex = i;
-			if (InventoryComponent->Content.Num() >= i)
-			{
-				InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
-				InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
-			}
+			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
+			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
 			InventorySlot->InventoryComponent = InventoryComponent;
+			InventorySlot->HighlightSlot();
 			BOX_EquipmentGrid->AddChildToWrapBox(InventorySlot);
 			//If equipped
 		}
@@ -125,6 +107,7 @@ void UUI::UpdateEquipSlots()
 			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
 			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
 			InventorySlot->InventoryComponent = InventoryComponent;
+			InventorySlot->HighlightSlot();
 			BOX_EquipmentGrid->AddChildToWrapBox(InventorySlot);
 			//If equipped
 		}

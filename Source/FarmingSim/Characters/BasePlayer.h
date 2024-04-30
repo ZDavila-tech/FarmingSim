@@ -8,9 +8,8 @@
 #include "../Utility/FPlayerInfo.h"
 #include "BasePlayer.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipUpdate, int, _EquipIndex);
+
 UCLASS(Blueprintable, BlueprintType)
 class FARMINGSIM_API ABasePlayer : public ACommonCharacter
 {
@@ -68,6 +67,9 @@ protected:
 
 	class UInventoryMenu* InventoryMenu;
 
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
+	FOnEquipUpdate* OnEquipUpdate;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -104,4 +106,6 @@ public:
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
+
+	FOnEquipUpdate* GetEquipDelegate();
 };

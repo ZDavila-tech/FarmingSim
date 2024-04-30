@@ -89,3 +89,16 @@ bool UInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEv
 	}
 	return false;
 }
+
+void UInventorySlot::HighlightSlot()
+{
+	FItemStruct* OutRow = ItemDataTable->FindRow<FItemStruct>(ItemID, "");
+	if (InventoryComponent->CurrentIndexEquipped == ContentIndex)
+	{
+		BTN_SlotButton->BackgroundColor = FLinearColor(FColor::Red);
+	}
+	else
+	{
+		BTN_SlotButton->BackgroundColor = FLinearColor(FColor::Black);
+	}
+}

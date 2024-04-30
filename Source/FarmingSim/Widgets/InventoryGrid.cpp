@@ -22,6 +22,7 @@ void UInventoryGrid::NativeConstruct()
 			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
 			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
 			InventorySlot->InventoryComponent = InventoryComponent;
+			InventorySlot->HighlightSlot();
 			BOX_InventoryGrid->AddChildToWrapBox(InventorySlot);
 			//If equipped
 		}
@@ -41,6 +42,7 @@ void UInventoryGrid::DisplayInventory(UInventoryComponent* _InventoryComponent)
 			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
 			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
 			InventorySlot->InventoryComponent = InventoryComponent;
+			InventorySlot->HighlightSlot();
 			BOX_InventoryGrid->AddChildToWrapBox(InventorySlot);
 			//If equipped
 		}
@@ -60,6 +62,7 @@ void UInventoryGrid::UpdateInventory()
 			InventorySlot->ItemID = InventoryComponent->Content[i].ItemID;
 			InventorySlot->Quantity = InventoryComponent->Content[i].Quantity;
 			InventorySlot->InventoryComponent = InventoryComponent;
+			InventorySlot->HighlightSlot();
 			BOX_InventoryGrid->AddChildToWrapBox(InventorySlot);
 			//If equipped
 		}

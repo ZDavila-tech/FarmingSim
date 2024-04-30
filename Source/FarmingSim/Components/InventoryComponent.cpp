@@ -305,10 +305,18 @@ void UInventoryComponent::RemoveFromInventory(int Index, bool RemoveAll, bool Is
 
 void UInventoryComponent::EquipWeapon(int Index)
 {
+	for (int i = 0; i < Content.Num(); i++)
+	{
+		UnequipWeapon(i);
+	}
+	Content[Index].Equipped = true;
+	FItemStruct OutRow = GetItemData(Content[Index].ItemID);
+	Cast<ABasePlayer>(GetOwner())->GetComponentByClass<UChildActorComponent>()->SetChildActorClass(OutRow.ItemClass);
 }
 
 void UInventoryComponent::UnequipWeapon(int Index)
 {
+	Content[Index].Equipped = false;
 }
 
 void UInventoryComponent::UseItem(const FInputActionValue& Value)

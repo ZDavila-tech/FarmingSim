@@ -69,7 +69,9 @@ void ABasePlayer::BeginPlay()
 	HealthComponent->GetHealthDelegate()->AddDynamic(UIRef, &UUI::SetHealth);
 	BoxDetector->OnComponentBeginOverlap.AddDynamic(this, &ABasePlayer::OnBeginOverlap);
 	BoxDetector->OnComponentEndOverlap.AddDynamic(this, &ABasePlayer::OnEndOverlap);
+	
 	InventoryComp->Content.Insert(FSlotStruct("BasePlow", 1, false),0);
+	UIRef->DisplayEquipSlots(InventoryComp);
 
 }
 
@@ -200,6 +202,11 @@ void ABasePlayer::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		InventoryComp->LookAtActor = nullptr;
 	}
 
+}
+
+FOnEquipUpdate* ABasePlayer::GetEquipDelegate()
+{
+	return &OnEquipUpdate;
 }
 
 
