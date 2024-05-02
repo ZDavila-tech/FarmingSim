@@ -5,7 +5,9 @@
 #include "Engine/StaticMesh.h"
 #include "Components/StaticMeshComponent.h"
 #include "../Characters/DayNightCycle.h"
+#include "../Characters/PlantableGround.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Tools/ItemBase.h"
 
 #include "../FarmingSim.h"
 
@@ -30,7 +32,8 @@ void APlantBase::BeginPlay()
 	Super::BeginPlay();
 	StaticMesh->SetStaticMesh(SeedlingMesh);
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), DayNightClass, OutActor);
-	Cast<ADayNightCycle>(OutActor[0])->GetDateDelegate()->AddDynamic(this, &APlantBase::GrowPlant);
+	DayNightCycle = Cast<ADayNightCycle>(OutActor[0]);
+	DayNightCycle->GetDateDelegate()->AddDynamic(this, &APlantBase::GrowPlant);
 	SetPlantInfo(0, this->GetActorLocation());
 }
 
@@ -54,6 +57,10 @@ void APlantBase::GrowPlant(int Month, int Day, int Year)
 	PlantInfo.DaysGrown++;
 	SetStage(PlantInfo.DaysGrown);
 
+	if (PlantInfo.PlantStage == FPlantStage::HARVESTABLE)
+	{
+		OnHarvested.Broadcast();
+	}
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%d"), PlantInfo.DaysGrown));
 }
 
@@ -74,5 +81,10 @@ void APlantBase::SetStage(int _DaysGrown)
 		StaticMesh->SetStaticMesh(HarvestableMesh);
 		PlantInfo.PlantStage = FPlantStage::HARVESTABLE;
 	}
+}
+
+FOnHarvested* APlantBase::GetHarvested()
+{
+	return &OnHarvested;
 }
 

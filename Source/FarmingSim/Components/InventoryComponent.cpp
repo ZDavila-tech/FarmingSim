@@ -346,12 +346,20 @@ void UInventoryComponent::UseItem(const FInputActionValue& Value)
 			if (Ground)
 			{
 				Ground->HandleInteract(Player);
-				return;
 			}
 			else
 			{
 				//Tool->Use();
 			}
+		}
+		Update();
+	}
+	else
+	{
+		APlantableGround* Ground = Cast<APlantableGround>(LookAtActor);
+		if (Ground)
+		{
+			Ground->HandleInteract(Player);
 		}
 		Update();
 	}

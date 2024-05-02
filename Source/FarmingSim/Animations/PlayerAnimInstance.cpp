@@ -26,6 +26,7 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaTimeX)
 		Direction = CalculateDirection(Velocity, GetOwningActor()->GetActorRotation());
 		ShouldMove = (Speed > 3.0 && MovementComp->GetCurrentAcceleration() != FVector(0.0f, 0.0f, 0.0f));
 		isFalling = MovementComp->IsFalling();
+		
 	}
 
 }

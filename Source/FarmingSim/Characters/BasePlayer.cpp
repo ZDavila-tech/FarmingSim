@@ -20,6 +20,7 @@
 #include "../Components/HealthComponent.h"
 #include "../Utility/PlayerInputConfigData.h"
 #include "../Interfaces/InteractInterface.h"
+#include "../Interfaces/FarmingInterface.h"
 #include "../Widgets/PauseMenu.h"
 #include "../Widgets/InventoryMenu.h"
 #include "../Widgets/UI.h"
@@ -87,6 +88,7 @@ void ABasePlayer::BeginPlay()
 	InventoryComp->InventorySize = 16;
 	InventoryComp->Content.Insert(FSlotStruct("BasePlow", 1, false),0);
 	InventoryComp->Content.Insert(FSlotStruct("BaseHammer", 1, false), 1);
+	InventoryComp->Content.Insert(FSlotStruct("OnionSeed", 1, false), 2);
 	UIRef->DisplayEquipSlots(InventoryComp);
 	OnCurrencyUpdate.Broadcast(Currency);
 	OnEquipUpdate.Broadcast(0);
@@ -296,6 +298,12 @@ void ABasePlayer::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		Cast<IInteractInterface>(OtherActor->GetComponentByClass<UItemComponent>())->LookAt();
 		Widget->SetVisibility(true);
 		ActionSlot->SetActionText(FText::FromString(("Pick Up")));
+		InventoryComp->CanInteract = true;
+		InventoryComp->LookAtActor = OtherActor;
+	}
+	else if (OtherActor->GetClass()->ImplementsInterface(UFarmingInterface::StaticClass()))
+	{
+		Cast<IFarmingInterface>(OtherActor)->LookAtPlot(this);
 		InventoryComp->CanInteract = true;
 		InventoryComp->LookAtActor = OtherActor;
 	}

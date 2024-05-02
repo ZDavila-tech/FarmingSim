@@ -16,6 +16,10 @@ public:
 	AItemBase();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FText> Actions;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UItemComponent* ItemComp;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,8 +30,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* StaticMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UItemComponent* ItemComp;
 
 	
 public:	

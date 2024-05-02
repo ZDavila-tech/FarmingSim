@@ -8,6 +8,8 @@
 #include "../Interfaces/InteractInterface.h"
 #include "PlantableGround.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPickedUp);
 UCLASS()
 class FARMINGSIM_API APlantableGround : public AActor, public IFarmingInterface, public IInteractInterface
 {
@@ -49,10 +51,15 @@ protected:
 	bool isEmpty;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool NeedsEmptying;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FTransform PlotLocation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TSubclassOf<class APlantBase> PlantType;
+
+	class APlantBase* CurrentPlant;
 
 public:	
 	// Called every frame
@@ -77,5 +84,8 @@ public:
 	void WaterPlants(UChildActorComponent* To_Toolol) override;
 	//Remove plants from plowed area
 	void DestroyPlant(UChildActorComponent* _Tool) override;
+
+	UFUNCTION()
+	void ClearPlot();
 
 };

@@ -13,5 +13,5 @@ UCLASS()
 class FARMINGSIM_API APlant_Onion : public APlantBase
 {
 	GENERATED_BODY()
-	
+
 };

@@ -7,6 +7,8 @@
 #include "../Utility/FPlantStage.h"
 #include "PlantBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHarvested);
+
 UCLASS()
 class FARMINGSIM_API APlantBase : public AActor
 {
@@ -15,6 +17,9 @@ class FARMINGSIM_API APlantBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	APlantBase();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AActor> CropClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -47,9 +52,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FPlantStruct PlantInfo;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class AActor> CropClass;
-
 	//To access day change
 	class ADayNightCycle* DayNightCycle;
 
@@ -58,17 +60,19 @@ protected:
 
 	TArray<AActor*> OutActor;
 
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
+	FOnHarvested OnHarvested;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void SetPlantInfo(int _DaysGrown, FVector _Location);
+	virtual void SetPlantInfo(int _DaysGrown, FVector _Location);
 
 	UFUNCTION()
-	void GrowPlant(int Month, int Day, int Year);
+	virtual void GrowPlant(int Month, int Day, int Year);
 
-	UFUNCTION()
-	void SetStage(int _DaysGrown);
+	virtual void SetStage(int _DaysGrown);
 
+	FOnHarvested* GetHarvested();
 };

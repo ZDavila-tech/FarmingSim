@@ -23,6 +23,9 @@ public:
 	class UWidgetComponent* Widget;
 	class UActionSlot* ActionSlot;
 
+	UPROPERTY(EditDefaultsOnly)
+	class UInventoryComponent* InventoryComp;
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -32,9 +35,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent* CameraComp;
-
-	UPROPERTY(EditDefaultsOnly)
-	class UInventoryComponent* InventoryComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UBoxComponent* BoxDetector;

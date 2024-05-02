@@ -5,6 +5,9 @@
 #include "../Characters/BasePlayer.h"
 #include "Engine/StaticMesh.h"
 #include "../Widgets/PlotWidget.h"
+#include "../Widgets/ActionSlot.h"
+#include "../Components/InventoryComponent.h"
+#include "../Components/ItemComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
@@ -50,12 +53,11 @@ void APlantableGround::BeginPlay()
 	Super::BeginPlay();
 
 	Widget->SetVisibility(false);
-
 	StaticMesh->SetMaterial(0, GrassMaterial);
 	PlotLocation = GetActorTransform();
 	isEmpty = true;
 	isPlowed = false;
-
+	NeedsEmptying = false;
 }
 
 // Called every frame
@@ -70,7 +72,7 @@ void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 	UChildActorComponent* Tool = PlayerCharacter->GetComponentByClass<UChildActorComponent>();
 	if (Tool)
 	{
-		if (Cast<ABaseSeed>(Tool->GetChildActor()) && isEmpty && isPlowed)
+		if (Cast<ABaseSeed>(Tool->GetChildActor()) && isEmpty && isPlowed && !NeedsEmptying)
 		{
 			PlantSeeds(Tool);
 		}
@@ -82,6 +84,21 @@ void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 		{
 			DestroyPlant(Tool);
 		}
+		else if (NeedsEmptying && !isEmpty)
+		{
+			CurrentPlant->Destroy();
+			GetWorld()->SpawnActor<AItemBase>(CurrentPlant->CropClass)->ItemComp->HandleInteract(PlayerCharacter);
+			//Cast<AItemBase>(CurrentPlant->CropClass)->ItemComp->HandleInteract(PlayerCharacter);
+			isEmpty = true;
+			NeedsEmptying = false;
+		}
+	}
+	else if (NeedsEmptying && !isEmpty)
+	{
+		CurrentPlant->Destroy();
+		GetWorld()->SpawnActor<AItemBase>(CurrentPlant->CropClass)->ItemComp->HandleInteract(PlayerCharacter);
+		isEmpty = true;
+		NeedsEmptying = false;
 	}
 }
 
@@ -98,6 +115,10 @@ void APlantableGround::WalkedAway()
 
 void APlantableGround::LookAtPlot(ABasePlayer* PlayerCharacter)
 {
+	if (NeedsEmptying)
+	{
+		PlayerCharacter->ActionSlot->SetActionText(FText::FromString(("Harvest")));
+	}
 	Widget->SetVisibility(true);
 }
 
@@ -110,6 +131,16 @@ void APlantableGround::PlantSeeds(UChildActorComponent* _Tool)
 	ABaseSeed* seed = Cast<ABaseSeed>(_Tool->GetChildActor());
 	seed->PlantSeed(seed->PlantClass, PlotLocation);
 	PlantType = seed->PlantClass;
+	TArray<AActor*> OutRow;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PlantType, OutRow);
+	for (int i = 0; i < OutRow.Num(); i++)
+	{
+		if (OutRow[i]->GetActorLocation() == PlotLocation.GetLocation())
+		{
+			CurrentPlant = Cast<APlantBase>(OutRow[i]);
+			CurrentPlant->GetHarvested()->AddDynamic(this, &APlantableGround::ClearPlot);
+		}
+	}
 	isEmpty = false;
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Planted");
 }
@@ -143,4 +174,10 @@ void APlantableGround::DestroyPlant(UChildActorComponent* _Tool)
 		}
 	}
 }
+
+void APlantableGround::ClearPlot()
+{
+	NeedsEmptying = true;
+}
+
 
