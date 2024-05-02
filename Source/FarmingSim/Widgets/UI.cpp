@@ -116,6 +116,6 @@ void UUI::UpdateEquipSlots()
 			BOX_EquipmentGrid->AddChildToWrapBox(InventorySlot);
 			//If equipped
 		}
-		InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UUI::UpdateEquipSlots);
+		//InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UUI::UpdateEquipSlots);
 	}
 }

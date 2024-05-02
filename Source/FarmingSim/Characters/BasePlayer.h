@@ -135,4 +135,6 @@ public:
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
+	FOnEquipUpdate* GetEquipUpdate();
+
 };

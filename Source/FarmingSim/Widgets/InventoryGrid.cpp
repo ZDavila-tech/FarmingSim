@@ -66,6 +66,6 @@ void UInventoryGrid::UpdateInventory()
 			BOX_InventoryGrid->AddChildToWrapBox(InventorySlot);
 			//If equipped
 		}
-		InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UInventoryGrid::UpdateInventory);
+		//InventoryComponent->GetUpdateDelegate()->AddDynamic(this, &UInventoryGrid::UpdateInventory);
 	}
 }

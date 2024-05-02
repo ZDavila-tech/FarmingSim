@@ -89,6 +89,7 @@ void ABasePlayer::BeginPlay()
 	InventoryComp->Content.Insert(FSlotStruct("BaseHammer", 1, false), 1);
 	UIRef->DisplayEquipSlots(InventoryComp);
 	OnCurrencyUpdate.Broadcast(Currency);
+	OnEquipUpdate.Broadcast(0);
 
 }
 
@@ -317,6 +318,11 @@ void ABasePlayer::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		InventoryComp->LookAtActor = nullptr;
 	}
 
+}
+
+FOnEquipUpdate* ABasePlayer::GetEquipUpdate()
+{
+	return &OnEquipUpdate;
 }
 
 

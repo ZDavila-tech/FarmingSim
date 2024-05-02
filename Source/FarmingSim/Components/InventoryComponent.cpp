@@ -55,10 +55,11 @@ void UInventoryComponent::PickUp(const FInputActionValue& Value)
 			if (IsValid(Comp))
 			{
 				Comp->HandleInteract(Cast<ABasePlayer>(GetOwner()));
-				return;
+				//return;
 			}
 		}
 		Update();
+		Player->GetEquipUpdate()->Broadcast(CurrentIndexEquipped);
 	}
 }
 
@@ -156,7 +157,14 @@ bool UInventoryComponent::CreateStack(FName ItemID, int Quantity)
 
 FItemStruct UInventoryComponent::GetItemData(FName ItemID) const
 {
-	return FItemStruct(*ItemDataTable->FindRow<FItemStruct>(ItemID, ""));
+	if (ItemID == "None")
+	{
+		return FItemStruct();
+	}
+	else
+	{
+		return FItemStruct(*ItemDataTable->FindRow<FItemStruct>(ItemID, ""));
+	}
 }
 
 FVector UInventoryComponent::GetDropLocation() const
@@ -329,21 +337,24 @@ void UInventoryComponent::UnequipWeapon(int Index)
 void UInventoryComponent::UseItem(const FInputActionValue& Value)
 {
 	FItemStruct OutRow = GetItemData(Content[CurrentIndexEquipped].ItemID);
-	TSubclassOf<ABaseTool> ToolClass = TSubclassOf<ABaseTool>(OutRow.ItemClass);
-	if (ToolClass)
+	if (!OutRow.Name.IsEmpty())
 	{
-		APlantableGround* Ground = Cast<APlantableGround>(LookAtActor);
-		if (Ground)
+		TSubclassOf<ABaseTool> ToolClass = TSubclassOf<ABaseTool>(OutRow.ItemClass);
+		if (ToolClass)
 		{
-			Ground->HandleInteract(Player);
-			return;
+			APlantableGround* Ground = Cast<APlantableGround>(LookAtActor);
+			if (Ground)
+			{
+				Ground->HandleInteract(Player);
+				return;
+			}
+			else
+			{
+				//Tool->Use();
+			}
 		}
-		else
-		{
-			//Tool->Use();
-		}
+		Update();
 	}
-	Update();
 }
 
 void UInventoryComponent::SaveInventory()
