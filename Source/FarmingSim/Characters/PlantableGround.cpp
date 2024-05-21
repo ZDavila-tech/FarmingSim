@@ -88,7 +88,6 @@ void APlantableGround::HandleInteract(ABasePlayer* PlayerCharacter)
 		{
 			CurrentPlant->Destroy();
 			GetWorld()->SpawnActor<AItemBase>(CurrentPlant->CropClass)->ItemComp->HandleInteract(PlayerCharacter);
-			//Cast<AItemBase>(CurrentPlant->CropClass)->ItemComp->HandleInteract(PlayerCharacter);
 			isEmpty = true;
 			NeedsEmptying = false;
 		}

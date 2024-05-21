@@ -14,6 +14,7 @@
 #include "../Utility/FSlotStruct.h"
 #include "../FarmingSim.h"
 #include "../Characters/BasePlayer.h"
+#include "../Characters/ShippingBox.h"
 #include "../Tools/BaseTool.h"
 #include "../Characters/PlantableGround.h"
 
@@ -157,13 +158,14 @@ bool UInventoryComponent::CreateStack(FName ItemID, int Quantity)
 
 FItemStruct UInventoryComponent::GetItemData(FName ItemID) const
 {
-	if (ItemID == "None")
+	FItemStruct* Data = ItemDataTable->FindRow<FItemStruct>(ItemID, "");
+	if (Data)
 	{
-		return FItemStruct();
+		return *Data;
 	}
 	else
 	{
-		return FItemStruct(*ItemDataTable->FindRow<FItemStruct>(ItemID, ""));
+		return FItemStruct();
 	}
 }
 
@@ -311,7 +313,7 @@ void UInventoryComponent::EquipWeapon(int Index)
 		UnequipWeapon(i);
 	}
 	Content[Index].Equipped = true;
-	if (Content[Index].ItemID == "")
+	if (Content[Index].ItemID == "None")
 	{
 		Player->WeaponChildActorComp->SetChildActorClass(NULL);
 		Player->Widget->SetVisibility(false);
@@ -349,6 +351,15 @@ void UInventoryComponent::UseItem(const FInputActionValue& Value)
 			}
 			else
 			{
+				AShippingBox* Box = Cast<AShippingBox>(LookAtActor);
+				if (Box)
+				{
+					Box->HandleInteract(Player);
+				}
+				else
+				{
+					UE_LOG(Game, Error, TEXT("Need a Shipping Box"));
+				}
 				//Tool->Use();
 			}
 		}
@@ -360,6 +371,18 @@ void UInventoryComponent::UseItem(const FInputActionValue& Value)
 		if (Ground)
 		{
 			Ground->HandleInteract(Player);
+		}
+		else
+		{
+			AShippingBox* Box = Cast<AShippingBox>(LookAtActor);
+			if (Box)
+			{
+				Box->HandleInteract(Player);
+			}
+			else
+			{
+				UE_LOG(Game, Error, TEXT("Need a Shipping Box"));
+			}
 		}
 		Update();
 	}

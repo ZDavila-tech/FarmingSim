@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class UInventoryComponent* InventoryComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class APlayerController* PlayerController;
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -40,8 +43,6 @@ protected:
 	class UBoxComponent* BoxDetector;
 
 	//Game Variables
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class APlayerController* PlayerController;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UPlayerAnimInstance* PlayerAnimation;
