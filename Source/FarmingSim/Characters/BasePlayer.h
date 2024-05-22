@@ -69,8 +69,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UActionSlot> ActionSlotClass;
 
-	
-
 	class UUI* UIRef;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -136,6 +134,8 @@ public:
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
+	void SetMoney(int _Money);
 	FOnEquipUpdate* GetEquipUpdate();
+	FOnCurrencyUpdate* GetCurrencyUpdate();
 
 };

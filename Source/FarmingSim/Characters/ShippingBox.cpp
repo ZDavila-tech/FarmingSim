@@ -40,6 +40,7 @@ void AShippingBox::HandleInteract(ABasePlayer* PlayerCharacter)
 {
 	ShippingMenu = CreateWidget<UShippingMenu>(PlayerCharacter->PlayerController, ShippingMenuClass);
 	ShippingMenu->ShippingInven = ShippingInventoryComp;
+	ShippingInventoryComp->GetMoneyDelegate()->AddDynamic(ShippingMenu, &UShippingMenu::SetMoneyEarned);
 	if (ShippingMenu == nullptr)
 	{
 		UE_LOG(Game, Error, TEXT("Need a Shipping Menu"));

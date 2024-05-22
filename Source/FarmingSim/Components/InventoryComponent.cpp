@@ -72,6 +72,7 @@ void UInventoryComponent::DropItem(FName ItemID, int Quantity)
 void UInventoryComponent::Update()
 {
 	OnInventoryUpdate.Broadcast();
+	CalculateMoney();
 	for (int i = 0; i < Content.Num(); i++)
 	{
 		if (Content[i].ItemID == "")
@@ -336,6 +337,16 @@ void UInventoryComponent::UnequipWeapon(int Index)
 	Content[Index].Equipped = false;
 }
 
+void UInventoryComponent::CalculateMoney()
+{
+	int sum = 0;
+	for (int i = 0; i < Content.Num(); i++)
+	{
+		sum += GetItemData(Content[i].ItemID).SellCost;
+	}
+	OnShipped.Broadcast(sum);
+}
+
 void UInventoryComponent::UseItem(const FInputActionValue& Value)
 {
 	FItemStruct OutRow = GetItemData(Content[CurrentIndexEquipped].ItemID);
@@ -395,5 +406,10 @@ void UInventoryComponent::SaveInventory()
 FOnInventoryUpdate* UInventoryComponent::GetUpdateDelegate()
 {
 	return &OnInventoryUpdate;
+}
+
+FMoneyDelegate* UInventoryComponent::GetMoneyDelegate()
+{
+	return &OnShipped;
 }
 

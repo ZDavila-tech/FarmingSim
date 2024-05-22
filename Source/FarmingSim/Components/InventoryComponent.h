@@ -8,6 +8,7 @@
 #include "InventoryComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryUpdate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMoneyDelegate, int, TotalEarned);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class FARMINGSIM_API UInventoryComponent : public UActorComponent
@@ -44,6 +45,9 @@ protected:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
 	FOnInventoryUpdate OnInventoryUpdate;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
+	FMoneyDelegate OnShipped;
 	
 	class ABasePlayer* Player;
 
@@ -105,9 +109,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UnequipWeapon(int Index);
 
+	UFUNCTION(BlueprintCallable)
+	void CalculateMoney();
+
 
 	UFUNCTION(BlueprintCallable)
 	void SaveInventory();
 
 	FOnInventoryUpdate* GetUpdateDelegate();
+	FMoneyDelegate* GetMoneyDelegate();
 };

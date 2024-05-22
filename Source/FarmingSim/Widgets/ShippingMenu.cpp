@@ -8,11 +8,13 @@
 #include "Components/TextBlock.h"
 #include "../Characters/ShippingBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Characters/BasePlayer.h"
 #include "../FarmingSim.h"
 
 void UShippingMenu::NativeConstruct()
 {
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	Player = Cast<ABasePlayer>(PC->GetPawn());
 	UE_LOG(Game, Error, TEXT("Entered Shipping Menu"));
 	UInventoryComponent* InvnComp = PC->GetPawn()->GetComponentByClass<UInventoryComponent>();
 	WBP_PlayerGrid->DisplayInventory(InvnComp);
@@ -37,9 +39,29 @@ void UShippingMenu::NativeDestruct()
 
 FReply UShippingMenu::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
 {
-	return FReply::Handled();
+	if (InKeyEvent.GetKey() == ExitButton)
+	{
+		Player->SetMoney(Money);
+		RemoveItems();
+		RemoveFromParent();
+		return FReply::Handled();
+	}
+	else
+	{
+		return  FReply::Unhandled();
+	}
 }
 
 void UShippingMenu::SetMoneyEarned(int _TotalMoney)
 {
+	Money = _TotalMoney;
+	TXT_TotalEarned->SetText(FText::FromString(FString::FromInt(_TotalMoney)));
+}
+
+void UShippingMenu::RemoveItems()
+{
+	for (int i = 0; i < ShippingInven->Content.Num(); i++)
+	{
+		ShippingInven->RemoveFromInventory(i, true, false);
+	}
 }

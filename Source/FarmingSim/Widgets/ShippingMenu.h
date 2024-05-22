@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ShippingMenu.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class FARMINGSIM_API UShippingMenu : public UUserWidget
 {
@@ -30,13 +28,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PC;
 
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class ABasePlayer* Player;
 
-	TArray<AActor*> Out;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int Money;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FKey ExitButton;
 	
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+	UFUNCTION()
 	void SetMoneyEarned(int _TotalMoney);
+
+	void RemoveItems();
+	
 };

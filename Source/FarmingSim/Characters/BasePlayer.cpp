@@ -330,9 +330,20 @@ void ABasePlayer::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	OnEquipUpdate.Broadcast(InventoryComp->CurrentIndexEquipped);
 }
 
+void ABasePlayer::SetMoney(int _Money)
+{
+	Currency += _Money;
+	OnCurrencyUpdate.Broadcast(Currency);
+}
+
 FOnEquipUpdate* ABasePlayer::GetEquipUpdate()
 {
 	return &OnEquipUpdate;
+}
+
+FOnCurrencyUpdate* ABasePlayer::GetCurrencyUpdate()
+{
+	return &OnCurrencyUpdate;
 }
 
 
