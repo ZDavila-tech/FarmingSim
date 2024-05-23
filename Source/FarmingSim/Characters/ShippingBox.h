@@ -34,6 +34,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UShippingMenu* ShippingMenu;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class ABasePlayer* Player;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class ADayNightCycle* DayNight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ADayNightCycle> DayNightClass;
+
+	TArray<AActor*> OutActor;
 
 public:	
 	// Called every frame
@@ -45,4 +56,7 @@ public:
 	FText LookAt() override;
 
 	void WalkedAway() override;
+
+	UFUNCTION()
+	void RemoveItems(int Month, int Day, int Year);
 };

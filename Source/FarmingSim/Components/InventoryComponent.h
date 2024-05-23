@@ -110,7 +110,7 @@ public:
 	void UnequipWeapon(int Index);
 
 	UFUNCTION(BlueprintCallable)
-	void CalculateMoney();
+	int CalculateMoney();
 
 
 	UFUNCTION(BlueprintCallable)

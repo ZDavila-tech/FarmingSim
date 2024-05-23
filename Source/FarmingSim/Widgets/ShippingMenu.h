@@ -44,6 +44,4 @@ public:
 	UFUNCTION()
 	void SetMoneyEarned(int _TotalMoney);
 
-	void RemoveItems();
-	
 };

@@ -20,7 +20,7 @@ void UShippingMenu::NativeConstruct()
 	WBP_PlayerGrid->DisplayInventory(InvnComp);
 
 	WBP_ShippingGrid->DisplayInventory(ShippingInven);
-
+	ShippingInven->GetMoneyDelegate()->Broadcast(ShippingInven->CalculateMoney());
 	FInputModeUIOnly WidgetMode;
 	PC->SetInputMode(WidgetMode);
 	PC->SetPause(true);
@@ -41,8 +41,6 @@ FReply UShippingMenu::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEve
 {
 	if (InKeyEvent.GetKey() == ExitButton)
 	{
-		Player->SetMoney(Money);
-		RemoveItems();
 		RemoveFromParent();
 		return FReply::Handled();
 	}
@@ -58,10 +56,3 @@ void UShippingMenu::SetMoneyEarned(int _TotalMoney)
 	TXT_TotalEarned->SetText(FText::FromString(FString::FromInt(_TotalMoney)));
 }
 
-void UShippingMenu::RemoveItems()
-{
-	for (int i = 0; i < ShippingInven->Content.Num(); i++)
-	{
-		ShippingInven->RemoveFromInventory(i, true, false);
-	}
-}
