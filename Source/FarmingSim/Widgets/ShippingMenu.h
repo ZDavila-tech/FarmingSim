@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "InteractActorWidget.h"
 #include "ShippingMenu.generated.h"
 
 
 UCLASS()
-class FARMINGSIM_API UShippingMenu : public UUserWidget
+class FARMINGSIM_API UShippingMenu : public UInteractActorWidget
 {
 	GENERATED_BODY()
 
@@ -26,21 +27,13 @@ protected:
 	class UTextBlock* TXT_TotalEarned;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class APlayerController* PC;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class ABasePlayer* Player;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int Money;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FKey ExitButton;
 	
 public:
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
-	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+	void NativeConstruct() override;
+	void NativeDestruct() override;
+	FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 	UFUNCTION()
 	void SetMoneyEarned(int _TotalMoney);
 

@@ -14,7 +14,7 @@
 #include "../Utility/FSlotStruct.h"
 #include "../FarmingSim.h"
 #include "../Characters/BasePlayer.h"
-#include "../Characters/ShippingBox.h"
+#include "../Characters/Interactables/InteractableActor.h"
 #include "../Tools/BaseTool.h"
 #include "../Characters/PlantableGround.h"
 
@@ -362,7 +362,7 @@ void UInventoryComponent::UseItem(const FInputActionValue& Value)
 			}
 			else
 			{
-				AShippingBox* Box = Cast<AShippingBox>(LookAtActor);
+				AInteractableActor* Box = Cast<AInteractableActor>(LookAtActor);
 				if (Box)
 				{
 					Box->HandleInteract(Player);
@@ -385,7 +385,7 @@ void UInventoryComponent::UseItem(const FInputActionValue& Value)
 		}
 		else
 		{
-			AShippingBox* Box = Cast<AShippingBox>(LookAtActor);
+			AInteractableActor* Box = Cast<AInteractableActor>(LookAtActor);
 			if (Box)
 			{
 				Box->HandleInteract(Player);

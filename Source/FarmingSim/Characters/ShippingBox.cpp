@@ -15,11 +15,6 @@ AShippingBox::AShippingBox()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	DefaultRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root"));
-	SetRootComponent(DefaultRoot);
-
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	StaticMesh->SetupAttachment(RootComponent);
 
 	ShippingInventoryComp = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory Component"));
 }
@@ -28,7 +23,6 @@ AShippingBox::AShippingBox()
 void AShippingBox::BeginPlay()
 {
 	Super::BeginPlay();
-	Player = Cast<ABasePlayer>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), DayNightClass, OutActor);
 	DayNight = Cast<ADayNightCycle>(OutActor[0]);
 	DayNight->GetDateDelegate()->AddDynamic(this, &AShippingBox::RemoveItems);
@@ -43,19 +37,10 @@ void AShippingBox::Tick(float DeltaTime)
 
 void AShippingBox::HandleInteract(ABasePlayer* PlayerCharacter)
 {
-	ShippingMenu = CreateWidget<UShippingMenu>(PlayerCharacter->PlayerController, ShippingMenuClass);
-	ShippingMenu->ShippingInven = ShippingInventoryComp;
-	ShippingInventoryComp->GetMoneyDelegate()->AddDynamic(ShippingMenu, &UShippingMenu::SetMoneyEarned);
-	if (ShippingMenu == nullptr)
-	{
-		UE_LOG(Game, Error, TEXT("Need a Shipping Menu"));
-		return;
-	}
-	else
-	{
-		UE_LOG(Game, Error, TEXT("Have Shipping Menu"));
-	}
-	ShippingMenu->AddToViewport();
+	Super::HandleInteract(PlayerCharacter);
+	Cast<UShippingMenu>(Menu)->ShippingInven = ShippingInventoryComp;
+	ShippingInventoryComp->GetMoneyDelegate()->AddDynamic(Cast<UShippingMenu>(Menu), &UShippingMenu::SetMoneyEarned);
+	Menu->AddToViewport();
 }
 
 FText AShippingBox::LookAt()
