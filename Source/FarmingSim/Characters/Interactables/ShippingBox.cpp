@@ -3,12 +3,12 @@
 
 #include "ShippingBox.h"
 #include "Engine/StaticMesh.h"
-#include "../Components/InventoryComponent.h"
-#include "../Widgets/ShippingMenu.h"
-#include "BasePlayer.h"
+#include "../../Components/InventoryComponent.h"
+#include "../../Widgets/InteractMenus/ShippingMenu.h"
+#include "../BasePlayer.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Characters/DayNightCycle.h"
-#include "../FarmingSim.h"
+#include "../DayNightCycle.h"
+#include "../../FarmingSim.h"
 
 // Sets default values
 AShippingBox::AShippingBox()

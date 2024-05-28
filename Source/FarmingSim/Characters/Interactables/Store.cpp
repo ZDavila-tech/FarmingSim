@@ -3,9 +3,9 @@
 
 #include "Store.h"
 #include "Engine/StaticMesh.h"
-#include "BasePlayer.h"
+#include "../BasePlayer.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Widgets/GeneralStoreMenu.h"
+#include "../../Widgets/InteractMenus/GeneralStoreMenu.h"
 
 // Sets default values
 AStore::AStore()

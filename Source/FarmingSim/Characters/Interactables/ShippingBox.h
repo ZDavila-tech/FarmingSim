@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../Interfaces/InteractInterface.h"
-#include "Interactables/InteractableActor.h"
+#include "../../Interfaces/InteractInterface.h"
+#include "InteractableActor.h"
 #include "ShippingBox.generated.h"
 
 UCLASS()

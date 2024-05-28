@@ -2,33 +2,28 @@
 
 
 #include "PlantableGround.h"
-#include "../Characters/BasePlayer.h"
+#include "../BasePlayer.h"
 #include "Engine/StaticMesh.h"
-#include "../Widgets/PlotWidget.h"
-#include "../Widgets/ActionSlot.h"
-#include "../Components/InventoryComponent.h"
-#include "../Components/ItemComponent.h"
+#include "../../Widgets/PlotWidget.h"
+#include "../../Widgets/ActionSlot.h"
+#include "../../Components/InventoryComponent.h"
+#include "../../Components/ItemComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Materials/Material.h"
-#include "../Tools/BaseSeed.h"
-#include "../Tools/BasePlow.h"
-#include "../Tools/BaseHammer.h"
-#include "../Plants/PlantBase.h"
+#include "../../Tools/BaseSeed.h"
+#include "../../Tools/BasePlow.h"
+#include "../../Tools/BaseHammer.h"
+#include "../../Plants/PlantBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "../FarmingSim.h"
+#include "../../FarmingSim.h"
 
 // Sets default values
 APlantableGround::APlantableGround()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	DefaultRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root"));
-	SetRootComponent(DefaultRoot);
-
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	StaticMesh->SetupAttachment(RootComponent);
 
 	StaticMesh->SetWorldScale3D(FVector(0.39f, 0.39f, 0.01f));
 

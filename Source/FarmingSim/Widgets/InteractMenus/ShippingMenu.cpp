@@ -2,14 +2,14 @@
 
 
 #include "ShippingMenu.h"
-#include "InventoryGrid.h"
-#include "../Components/InventoryComponent.h"
+#include "../InventoryGrid.h"
+#include "../../Components/InventoryComponent.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/TextBlock.h"
-#include "../Characters/ShippingBox.h"
+#include "../../Characters/Interactables/ShippingBox.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Characters/BasePlayer.h"
-#include "../FarmingSim.h"
+#include "../../Characters/BasePlayer.h"
+#include "../../FarmingSim.h"
 
 void UShippingMenu::NativeConstruct()
 {

@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../Interfaces/FarmingInterface.h"
-#include "../Interfaces/InteractInterface.h"
+#include "../../Interfaces/FarmingInterface.h"
+#include "InteractableActor.h"
 #include "PlantableGround.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPickedUp);
 UCLASS()
-class FARMINGSIM_API APlantableGround : public AActor, public IFarmingInterface, public IInteractInterface
+class FARMINGSIM_API APlantableGround : public AInteractableActor, public IFarmingInterface
 {
 	GENERATED_BODY()
 	
@@ -24,16 +24,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class USceneComponent* DefaultRoot;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UWidgetComponent* Widget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UBoxComponent* BoxCollider;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMaterial* GrassMaterial;

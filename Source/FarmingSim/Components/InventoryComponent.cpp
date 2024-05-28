@@ -16,7 +16,7 @@
 #include "../Characters/BasePlayer.h"
 #include "../Characters/Interactables/InteractableActor.h"
 #include "../Tools/BaseTool.h"
-#include "../Characters/PlantableGround.h"
+#include "../Characters/Interactables/PlantableGround.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()

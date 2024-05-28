@@ -4,7 +4,7 @@
 #include "InteractActorWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Characters/BasePlayer.h"
+#include "../../Characters/BasePlayer.h"
 
 void UInteractActorWidget::NativeConstruct()
 {

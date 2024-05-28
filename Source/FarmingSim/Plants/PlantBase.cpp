@@ -5,10 +5,9 @@
 #include "Engine/StaticMesh.h"
 #include "Components/StaticMeshComponent.h"
 #include "../Characters/DayNightCycle.h"
-#include "../Characters/PlantableGround.h"
+#include "../Characters/Interactables/PlantableGround.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Tools/ItemBase.h"
-
 #include "../FarmingSim.h"
 
 // Sets default values
