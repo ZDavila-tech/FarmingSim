@@ -135,6 +135,7 @@ public:
 		int32 OtherBodyIndex);
 
 	void SetMoney(int _Money);
+	int GetMoney();
 	FOnEquipUpdate* GetEquipUpdate();
 	FOnCurrencyUpdate* GetCurrencyUpdate();
 

@@ -13,6 +13,8 @@ UCLASS()
 class FARMINGSIM_API UInteractActorWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerController* PC;

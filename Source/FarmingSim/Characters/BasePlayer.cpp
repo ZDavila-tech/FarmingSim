@@ -336,6 +336,11 @@ void ABasePlayer::SetMoney(int _Money)
 	OnCurrencyUpdate.Broadcast(Currency);
 }
 
+int ABasePlayer::GetMoney()
+{
+	return Currency;
+}
+
 FOnEquipUpdate* ABasePlayer::GetEquipUpdate()
 {
 	return &OnEquipUpdate;
